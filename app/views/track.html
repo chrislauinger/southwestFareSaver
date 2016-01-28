@@ -1,0 +1,57 @@
+ <div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+         <ul class="breadcrumb">
+             <li><a href="index.html">Home</a></li>
+             <li class="active">Track</li>
+         </ul>
+     </div>
+     <div class="col-xs-12" ng-show="currentUser"  ng-controller="TrackController">
+         <h3>Add Booked Flight</h3>
+                <form class="form-inline" name="bookedForm" ng-submit="submitFlight()" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : bookedForm.origin.$error.required && !bookedForm.origin.$pristine }">
+                <input type="text" class="form-control" id="origin" name="origin" placeholder="Origin (3 letter code)"
+                    ng-model="flightInfo.origin" required>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : bookedForm.destination.$error.required && !bookedForm.destination.$pristine }">
+                <input type="text" class="form-control" id="destination" name="destination" placeholder="Destination (3 letter code)"
+                    ng-model="flightInfo.destination" required>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : bookedForm.date.$error.required && !bookedForm.date.$pristine }">
+                <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine }">
+                <input type="number" class="form-control" id="flightNumber" name="flightNumber" placeholder="Flight Number (first flight)"
+                    ng-model="flightInfo.flightNumber" required>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : bookedForm.cost.$error.required && !bookedForm.cost.$pristine }">
+                <input type="number" class="form-control" id="cost" name="cost" placeholder="Cost (dollors or points)"
+                    ng-model="flightInfo.cost" required>
+                </div>
+                <div class="form-group">
+                <input type="checkbox" class="form-control" id="usingPoints" name="usingPoints" placeholder="Using Points"
+                    ng-model="flightInfo.usingPoints"> Using Points
+                </div>
+                
+                <button type="button" class="btn btn-default btn-sm" ng-click="clearForm()">Clear Form</button> 
+              </form> 
+     </div>
+ </div>
+ 
+ <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+        <p>Booked Flights </p>
+        <p> display savings warning here if cheaper fare </p>
+    </div>
+        <div class="row row-content">
+            <div class="col-xs-12 col-sm-6">
+                <button type="button" class="btn btn-primary" ng-click="updateFlightDislay()">Get Flights 2</button>
+                <div  ng-repeat="flight in userFlights">
+                     <p>{{flight.displayStr}}</p>
+                </div>
+                <div id="chartContainer"  ng-controller="PlotController" >FusionCharts XT will load here !</div> 
+                
+        </div>
+</div>
+</div>
+</div>
