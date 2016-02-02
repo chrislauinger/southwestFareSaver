@@ -77,7 +77,9 @@ angular.module('southwestFareSaverApp')
 
         .controller('TrackController', ['$scope', 'userFlightService',function($scope, userFlightService) {
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
-            //$scope.todaysDate = new Date().now();
+            
+            //TODO: verify flight is real?, 
+            //TODO: when update flight display at end, it repeats flights
             $scope.submitFlight = function(){
                 //check origin
                 if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
@@ -100,11 +102,13 @@ angular.module('southwestFareSaverApp')
             }
 
             $scope.updateFlightDislay = function(){
+
                  userFlightService.getFlights($scope.currentUser.username)
                  .on('success', function(response) {
                         console.log('sucess get flights');
                         
                         console.log(response)
+                        $scope.resetUserFlights();
                         for (var i = 0; i < response.data.Items.length; i++){
                             $scope.addUserFlight(new UserFlight(response.data.Items[i]));
                         }
@@ -326,9 +330,16 @@ angular.module('southwestFareSaverApp')
             $scope.setCurrentUser = function (user) {
                 $scope.currentUser = user;
             };
+
             $scope.addUserFlight = function(flight){
+                //attempt to find fares for this flight
+                
                 $scope.userFlights.push(flight);
             }
+
+             $scope.resetUserFlights = function(){
+                $scope.userFlights = [];
+             }
 
             $scope.tests = [{'number' : 100},{'number' : 300}];
 

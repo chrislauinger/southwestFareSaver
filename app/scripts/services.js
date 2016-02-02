@@ -45,8 +45,6 @@ angular.module('southwestFareSaverApp')
         }])
 
             .service('userService', [ function() {
-              AWS.config.update({accessKeyId: 'AKIAJFYOJDB7HPJ2FFNA', secretAccessKey: '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'});
-              AWS.config.region = 'us-west-2';  //us-west-2 is Oregon
 
               this.getItem = function(username){  
                 var table = new AWS.DynamoDB({params: {TableName: 'users'}});
@@ -61,8 +59,6 @@ angular.module('southwestFareSaverApp')
         }])
 
               .service('userFlightService', [ function() {
-              AWS.config.update({accessKeyId: 'AKIAJFYOJDB7HPJ2FFNA', secretAccessKey: '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'});
-              AWS.config.region = 'us-west-2';  //us-west-2 is Oregon
 
               this.addFlight = function(flightInfo, username){
                 var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
@@ -74,6 +70,20 @@ angular.module('southwestFareSaverApp')
                                       'username' : {
                                         ComparisonOperator : 'EQ',
                                         AttributeValueList : [{'S' : String(username)}]
+                                      }}});
+              }
+        }])
+
+             .service('fareService', [ function() {
+
+
+
+              this.getFares = function(flight){  
+                var table = new AWS.DynamoDB({params: {TableName: 'fares'}});
+                return table.query({KeyConditions: { 
+                                      'route' : {
+                                        ComparisonOperator : 'EQ',
+                                        AttributeValueList : [{'S' : String(flight.route)}]
                                       }}});
               }
         }])

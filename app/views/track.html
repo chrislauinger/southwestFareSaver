@@ -32,7 +32,7 @@
                 <input type="checkbox" class="form-control" id="usingPoints" name="usingPoints" placeholder="Using Points"
                     ng-model="flightInfo.usingPoints"> Using Points
                 </div>
-                
+                <button type="submit" class="btn btn-primary" ng-disabled="bookedForm.$invalid">Add Flight</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="clearForm()">Clear Form</button> 
               </form> 
      </div>
