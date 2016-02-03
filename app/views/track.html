@@ -45,11 +45,13 @@
     </div>
         <div class="row row-content">
             <div class="col-xs-12 col-sm-6">
-                <button type="button" class="btn btn-primary" ng-click="updateFlightDislay()">Get Flights 2</button>
+                <button type="button" class="btn btn-primary" ng-click="updateFlightDisplay()">Get Flights 2</button>
                 <div  ng-repeat="flight in userFlights">
                      <p>{{flight.displayStr}}</p>
                 </div>
-                <div id="chartContainer"  ng-controller="PlotController" >FusionCharts XT will load here !</div> 
+                 <div class="my-chart" ng-controller="PlotController">
+                    <linechart data="data" options="options"></linechart>
+                </div>
                 
         </div>
 </div>

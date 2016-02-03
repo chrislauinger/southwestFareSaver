@@ -16,11 +16,14 @@ function UserFlight(data){
     this.flightNumber = parseInt(data.flight_number.N);
     this.cost = parseInt(data.cost.N);
     this.usingPoints = data.using_points.BOOL;
+    this.flightKey = data.flight_key.S;
     this.fareHistory = [];
+    this.route = this.origin.toString() + "_" + this.destination.toString();
 
-    var day = this.date.getDate();
+    var day = this.date.getUTCDate();
     var month = monthNames[this.date.getMonth()];
     this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
+
   }
 
 
@@ -49,11 +52,12 @@ return item;
 };
 
 var  getUserFlightItem = function(flightInfo, username){
-  var dateStr=  flightInfo.date.getTime().toString();
+  var dateStr=  (flightInfo.date.getTime() - flightInfo.date.getTimezoneOffset()*60*1000).toString();
   var numberStr = flightInfo.flightNumber.toString();
-  var key = username + "_" + dateStr + "_" + numberStr;
+  var route = flightInfo.origin.toString() + "_" + flightInfo.destination.toString();
+  var key = route + "_" + dateStr + "_" + numberStr;
   var item = {
-    "unique_key" : {"S" : key},
+    "flight_key" : {"S" : key},
     "username" : {"S" : username},
     "origin" : {"S" : flightInfo.origin},
     "destination" : {"S" : flightInfo.destination},
@@ -65,7 +69,7 @@ var  getUserFlightItem = function(flightInfo, username){
   return item;
 }
 
-var getCities = function(){
+var validAirportCode = function(airport){
     var cities = ['GSP', 'FNT', 'BOS', 'OAK', 'LIT', 'BOI', 'SAN', 'DCA', 'LBB', 'BWI', 
     'PIT', 'RIC', 'SAT', 'JAX', 'IAD', 'JAN', 'HRL', 'CHS', 'EYW', 'BNA',
     'PHL', 'SNA', 'SFO', 'PHX', 'LAX', 'MAF', 'LAS', 'CRP', 'CMH', 'FLL', 

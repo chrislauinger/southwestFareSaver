@@ -2,80 +2,43 @@
 
 angular.module('southwestFareSaverApp')
 
-         .controller('PlotController', ['$scope', 'userFlightService',function($scope, userFlightService) {
-        FusionCharts.ready(function(){
-        var revenueChart = new FusionCharts({
-      type: "column2d",
-      renderAt: "chartContainer",
-      width: "500",
-      height: "300",
-      dataFormat: "json",
-      dataSource: {
-       "chart": {
-          "caption": "Monthly revenue for last year",
-          "subCaption": "Harry's SuperMart",
-          "xAxisName": "Month",
-          "yAxisName": "Revenues (In USD)",
-          "theme": "zune"
-       },
-       "data": [
-          {
-             "label": "Jan",
-             "value": "420000"
-          },
-          {
-             "label": "Feb",
-             "value": "810000"
-          },
-          {
-             "label": "Mar",
-             "value": "720000"
-          },
-          {
-             "label": "Apr",
-             "value": "550000"
-          },
-          {
-             "label": "May",
-             "value": "910000"
-          },
-          {
-             "label": "Jun",
-             "value": "510000"
-          },
-          {
-             "label": "Jul",
-             "value": "680000"
-          },
-          {
-             "label": "Aug",
-             "value": "620000"
-          },
-          {
-             "label": "Sep",
-             "value": "610000"
-          },
-          {
-             "label": "Oct",
-             "value": "490000"
-          },
-          {
-             "label": "Nov",
-             "value": "900000"
-          },
-          {
-             "label": "Dec",
-             "value": "730000"
-          }
-        ]
-      }
+    .controller('PlotController', ['$scope', 'userFlightService',function($scope, userFlightService) {
+       $scope.data = {
+            dataset0: [
+              {x: new Date("2016-01-26"), val_0: 250, val_1 : 200},
+              {x: new Date("2016-01-29"), val_0: 325, val_1 : 200},
+              {x: new Date("2016-01-30"), val_0: 300, val_1 : 200},
+            ]
+          };
+
+          $scope.options = {
+            series: [
+              {
+                axis: "y",
+                dataset: "dataset0",
+                key: "val_0",
+                label: "Market",
+                color: "#1f77b4",
+                type: ['line','dot'],
+                id: 'mySeries0'
+              },
+             {
+                axis: "y",
+                dataset: "dataset0",
+                key: "val_1",
+                label: "Purchase",
+                color: "#00ff00",
+                type: ['line','dot'],
+                id: 'mySeries0'
+              },
+
+            ],
+            axes: {x: {key: "x", type : "date"}}
+          };
  
-  });
-  revenueChart.render("chartContainer");
-});
 }]) 
 
-        .controller('TrackController', ['$scope', 'userFlightService',function($scope, userFlightService) {
+        .controller('TrackController', ['$scope', 'userFlightService', 'fareService', function($scope, userFlightService, fareService) {
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
             
             //TODO: verify flight is real?, 
@@ -101,16 +64,35 @@ angular.module('southwestFareSaverApp')
                 
             }
 
-            $scope.updateFlightDislay = function(){
+            $scope.addFaresToUserFlights = function(){
+                $scope.userFlights.forEach(function(flight, i){
+                    fareService.getFares(flight)
+                    .on('success', function(response){
+                        for (var j = 0; j < response.data.Items.length; j++){
+                                var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
+                                var cost = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
+                                var fareItem = { 'date' : fareValidityDate, 'cost' : cost};
+                                flight.fareHistory.push(fareItem);
+                        }
+                        //check for refunds? setup plots? 
+                    }).
+                    on('error', function(response) {
+                       console.log('fail get fares');
+                       console.log(response);
+                    }).send();
+
+                })
+            }
+
+            $scope.updateFlightDisplay = function(){
 
                  userFlightService.getFlights($scope.currentUser.username)
                  .on('success', function(response) {
-                        console.log('sucess get flights');
-                        
-                        console.log(response)
-                        $scope.resetUserFlights();
-                        for (var i = 0; i < response.data.Items.length; i++){
-                            $scope.addUserFlight(new UserFlight(response.data.Items[i]));
+                        if (response.data.Items.length != $scope.userFlights.length){
+                            $scope.resetUserFlights();
+                            for (var i = 0; i < response.data.Items.length; i++){
+                                $scope.addUserFlight(new UserFlight(response.data.Items[i]));
+                            }
                         }
                     }).
                     on('error', function(response) {
@@ -119,8 +101,11 @@ angular.module('southwestFareSaverApp')
                     }).
                     on('complete', function(response) {
                         $scope.$apply();
+                        $scope.addFaresToUserFlights();
                     }).send();
             }
+
+
 
             $scope.clearForm = function(){
                 $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
@@ -333,7 +318,6 @@ angular.module('southwestFareSaverApp')
 
             $scope.addUserFlight = function(flight){
                 //attempt to find fares for this flight
-                
                 $scope.userFlights.push(flight);
             }
 
