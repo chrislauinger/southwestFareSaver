@@ -3,20 +3,14 @@
 angular.module('southwestFareSaverApp')
 
     .controller('PlotController', ['$scope', 'userFlightService',function($scope, userFlightService) {
-       $scope.data = {
-            dataset0: [
-              {x: new Date("2016-01-26"), val_0: 250, val_1 : 200},
-              {x: new Date("2016-01-29"), val_0: 325, val_1 : 200},
-              {x: new Date("2016-01-30"), val_0: 300, val_1 : 200},
-            ]
-          };
+
 
           $scope.options = {
             series: [
               {
                 axis: "y",
-                dataset: "dataset0",
-                key: "val_0",
+                dataset : "dataset0",
+                key: "currentPrice",
                 label: "Market",
                 color: "#1f77b4",
                 type: ['line','dot'],
@@ -25,15 +19,15 @@ angular.module('southwestFareSaverApp')
              {
                 axis: "y",
                 dataset: "dataset0",
-                key: "val_1",
+                key: "cost",
                 label: "Purchase",
                 color: "#00ff00",
-                type: ['line','dot'],
-                id: 'mySeries0'
+                type: ['line'],
+                id: 'mySeries1'
               },
 
             ],
-            axes: {x: {key: "x", type : "date"}}
+            axes: {x: {key: "date", type : "date"}}
           };
  
 }]) 
@@ -42,7 +36,6 @@ angular.module('southwestFareSaverApp')
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
             
             //TODO: verify flight is real?, 
-            //TODO: when update flight display at end, it repeats flights
             $scope.submitFlight = function(){
                 //check origin
                 if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
@@ -59,7 +52,7 @@ angular.module('southwestFareSaverApp')
                     on('complete', function(response) {
                         $scope.clearForm();
                         $scope.$apply();
-                        $scope.updateFlightDislay();
+                        $scope.updateFlightDisplay();
                     }).send();
                 
             }
@@ -68,11 +61,28 @@ angular.module('southwestFareSaverApp')
                 $scope.userFlights.forEach(function(flight, i){
                     fareService.getFares(flight)
                     .on('success', function(response){
+                        if (response.data.Items.length == 0){
+                            console.log("Did not find any fares")
+                        }
                         for (var j = 0; j < response.data.Items.length; j++){
                                 var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
-                                var cost = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
-                                var fareItem = { 'date' : fareValidityDate, 'cost' : cost};
+                                var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
+                                var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                                 flight.fareHistory.push(fareItem);
+                                if (j === (response.data.Items.length-1)){
+                                    if (fareItem.currentPrice >= fareItem.cost){
+                                        flight.refundStr = "No Refund Currently";
+                                    }
+                                    else {
+                                        flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (fareItem.cost - fareItem.currentPrice).toString();
+                                    }
+                                }
+                        }
+                        flight.fareHistory = {dataset0 : flight.fareHistory};
+                        if (i === ($scope.userFlights.length-1)){ //signal last fare pushed, ready to plots
+                            $scope.setPlotsReady(true);
+                            $scope.$apply();
+                            console.log($scope.userFlights)
                         }
                         //check for refunds? setup plots? 
                     }).
@@ -175,109 +185,6 @@ angular.module('southwestFareSaverApp')
         }])
     
     
-        .controller('ContactController', ['$scope', function($scope) {
-
-            $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-            
-            var channels = [{value:"tel", label:"Tel."}, {value:"Email",label:"Email"}];
-            
-            $scope.channels = channels;
-            $scope.invalidChannelSelection = false;
-                        
-        }])
-
-        .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
-            
-            $scope.sendFeedback = function() {
-                console.log($scope.feedback);
-                if ($scope.feedback.agree && ($scope.feedback.mychannel == "")) {
-                    $scope.invalidChannelSelection = true;
-                    console.log('incorrect');
-                }
-                else {
-                    feedbackFactory.getFeedback().save($scope.feedback);
-                    $scope.invalidChannelSelection = false;
-                    $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-                    $scope.feedback.mychannel="";
-                    $scope.feedbackForm.$setPristine();
-                    console.log($scope.feedback);
-                }
-            };
-        }])
-
-        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
-
-            $scope.showDish = false;
-            $scope.message="Loading ...";
-            $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)})
-            .$promise.then(
-                            function(response){
-                                $scope.dish = response;
-                                $scope.showDish = true;
-                            },
-                            function(response) {
-                                $scope.message = "Error: "+response.status + " " + response.statusText;
-                            }
-            );
-            
-        }])
-
-         .controller('DishCommentController', ['$scope', 'menuFactory', function($scope,menuFactory) {
-            
-            $scope.mycomment = {rating:5, comment:"", author:"", date:""};
-            
-            $scope.submitComment = function () {
-                                $scope.mycomment.date = new Date().toISOString();
-                                console.log($scope.mycomment);
-                                $scope.dish.comments.push($scope.mycomment);
-
-                menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
-                                $scope.commentForm.$setPristine();
-                                $scope.mycomment = {rating:5, comment:"", author:"", date:""};
-            }
-        }])
-
-        .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory) {
-            $scope.showDish = false;
-            $scope.message="Loading ...";
-            $scope.dish = menuFactory.getDishes().get({id:0})
-            .$promise.then(
-                function(response){
-                    $scope.dish = response;
-                    $scope.showDish = true;
-                },
-                function(response) {
-                    $scope.message = "Error: "+response.status + " " + response.statusText;
-                }
-            );
-
-            $scope.showPromotion = false;
-            $scope.promotionMessage="Loading ...";
-            $scope.homePromotion = menuFactory.getPromotions().get({id:0})
-            .$promise.then(
-                function(response){
-                    $scope.homePromotion = response;
-                    $scope.showPromotion = true;
-                },
-                function(response) {
-                    $scope.promotionMessage = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-
-            $scope.showLeader = false;
-            $scope.leaderMessage="Loading ...";
-            $scope.homeLeader = corporateFactory.getLeaders().get({id:3})
-            .$promise.then(
-                function(response){
-                    $scope.homeLeader = response;
-                    $scope.showLeader = true;
-                },
-                function(response) {
-                    $scope.leaderMessage = "Error: " + response.status + " " + response.statusText;
-                }
-            );
-
-        }])
 
         .controller('LoginController', ['$scope',  'userService', function($scope,  userService) {
           $scope.username = ''
@@ -312,6 +219,7 @@ angular.module('southwestFareSaverApp')
     .controller('ApplicationController', ['$scope', function($scope ) {
             $scope.currentUser = null;
             $scope.userFlights = [];
+            $scope.plotsReady = false;
             $scope.setCurrentUser = function (user) {
                 $scope.currentUser = user;
             };
@@ -323,6 +231,10 @@ angular.module('southwestFareSaverApp')
 
              $scope.resetUserFlights = function(){
                 $scope.userFlights = [];
+             }
+
+             $scope.setPlotsReady = function(ready){
+                $scope.plotsReady = ready;
              }
 
             $scope.tests = [{'number' : 100},{'number' : 300}];

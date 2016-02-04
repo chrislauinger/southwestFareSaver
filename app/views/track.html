@@ -43,17 +43,22 @@
         <p>Booked Flights </p>
         <p> display savings warning here if cheaper fare </p>
     </div>
-        <div class="row row-content">
-            <div class="col-xs-12 col-sm-6">
+  <div class="col-xs-12 col-sm-12">
+
                 <button type="button" class="btn btn-primary" ng-click="updateFlightDisplay()">Get Flights 2</button>
-                <div  ng-repeat="flight in userFlights">
-                     <p>{{flight.displayStr}}</p>
                 </div>
-                 <div class="my-chart" ng-controller="PlotController">
-                    <linechart data="data" options="options"></linechart>
+
+                <div ng-repeat="userFlight in userFlights" ng-controller="PlotController" ng-if="plotsReady">
+                 <div class="col-xs-12 col-sm-6">
+                    {{userFlight.displayStr}} <br>
+                    {{userFlight.refundStr}} 
+                    </div>
+                 <div class="col-xs-12 col-sm-6">
+                    <div class="my-chart">
+                        <linechart data="userFlight.fareHistory" options="options"></linechart>
+                    </div>
+                    </div>
                 </div>
+</div>
                 
-        </div>
-</div>
-</div>
 </div>

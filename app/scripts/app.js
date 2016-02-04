@@ -41,8 +41,7 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url: 'search',
                 views: {
                     'content@': {
-                        templateUrl : 'views/search.html',
-                        controller  : 'MenuController'
+                        templateUrl : 'views/search.html'
                     }
                 }
             })
@@ -51,8 +50,7 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url: 'checkin',
                 views: {
                     'content@': {
-                        templateUrl : 'views/checkin.html',
-                        controller  : 'MenuController'
+                        templateUrl : 'views/checkin.html'
                    }
                 }
             });
