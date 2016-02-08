@@ -2,63 +2,36 @@
 
 angular.module('southwestFareSaverApp')
 
-    .controller('PlotController', ['$scope', 'userFlightService',function($scope, userFlightService) {
-
-
+    .controller('PlotController', ['$scope', '$rootScope', 'fareService', 'userFlightService', 'dataFactory', function($scope, $rootScope, fareService, userFlightService, dataFactory) {
           $scope.options = {
             series: [
               {
                 axis: "y",
                 dataset : "dataset0",
                 key: "currentPrice",
-                label: "Market",
-                color: "#1f77b4",
-                type: ['line','dot'],
-                id: 'mySeries0'
+                label: "M",
+                color: "#0057e7",
+                type: ['line']
               },
              {
                 axis: "y",
                 dataset: "dataset0",
                 key: "cost",
-                label: "Purchase",
-                color: "#00ff00",
-                type: ['line'],
-                id: 'mySeries1'
+                label: "P",
+                color: "#028900",
+                type: ['line']
               },
 
             ],
-            axes: {x: {key: "date", type : "date"}}
+            axes: {x: {key: "date", type : "date"},
+                    y: {min : 0}
+                }
           };
- 
-}]) 
 
-        .controller('TrackController', ['$scope', 'userFlightService', 'fareService', function($scope, userFlightService, fareService) {
-            $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
-            
-            //TODO: verify flight is real?, 
-            $scope.submitFlight = function(){
-                //check origin
-                if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
-                if (!validAirportCode($scope.flightInfo.destination)){ console.log("invalid destination")};
+           $scope.userFlights = dataFactory.getUserFlights();
 
-                userFlightService.addFlight($scope.flightInfo, $scope.currentUser.username)
-                 .on('success', function(response) {
-
-                    }).
-                    on('error', function(response) {
-                       console.log('fail add flight');
-                       console.log(response);
-                    }).
-                    on('complete', function(response) {
-                        $scope.clearForm();
-                        $scope.$apply();
-                        $scope.updateFlightDisplay();
-                    }).send();
-                
-            }
-
-            $scope.addFaresToUserFlights = function(){
-                $scope.userFlights.forEach(function(flight, i){
+           $scope.addFaresToUserFlights = function(){
+                 dataFactory.getUserFlights().forEach(function(flight, i){
                     fareService.getFares(flight)
                     .on('success', function(response){
                         if (response.data.Items.length == 0){
@@ -80,28 +53,27 @@ angular.module('southwestFareSaverApp')
                         }
                         flight.fareHistory = {dataset0 : flight.fareHistory};
                         if (i === ($scope.userFlights.length-1)){ //signal last fare pushed, ready to plots
-                            $scope.setPlotsReady(true);
+                            $scope.userFlights = dataFactory.getUserFlights();
                             $scope.$apply();
-                            console.log($scope.userFlights)
                         }
-                        //check for refunds? setup plots? 
                     }).
                     on('error', function(response) {
                        console.log('fail get fares');
                        console.log(response);
                     }).send();
-
+                
                 })
             }
 
             $scope.updateFlightDisplay = function(){
-
-                 userFlightService.getFlights($scope.currentUser.username)
+                console.log(dataFactory.getCurrentUser().username);
+                 userFlightService.getFlights(dataFactory.getCurrentUser().username)
                  .on('success', function(response) {
+                        console.log(response);
                         if (response.data.Items.length != $scope.userFlights.length){
-                            $scope.resetUserFlights();
+                            dataFactory.resetUserFlights();
                             for (var i = 0; i < response.data.Items.length; i++){
-                                $scope.addUserFlight(new UserFlight(response.data.Items[i]));
+                                dataFactory.addUserFlight(new UserFlight(response.data.Items[i]));
                             }
                         }
                     }).
@@ -110,38 +82,57 @@ angular.module('southwestFareSaverApp')
                        console.log(response);
                     }).
                     on('complete', function(response) {
-                        $scope.$apply();
+                        $scope.userFlights = dataFactory.getUserFlights();
                         $scope.addFaresToUserFlights();
                     }).send();
             }
 
 
+             $rootScope.$on('userSet', function (event, args) {
+                $scope.updateFlightDisplay();
+                }
+             )
 
+        }]) 
+
+        .controller('FlightFormController', ['$scope', 'userFlightService','dataFactory', function($scope, userFlightService, dataFactory) {
+            
+            $scope.startedPlotting = false;
+            $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
+            $scope.currentUser = null;
+            $scope.getCurrentUser = function(){
+                $scope.currentUser = dataFactory.getCurrentUser();
+                return $scope.currentUser;
+            }
+            
+            //TODO: verify flight is real?, 
+            $scope.submitFlight = function(){
+                //check origin
+                if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
+                if (!validAirportCode($scope.flightInfo.destination)){ console.log("invalid destination")};
+
+                userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
+                 .on('success', function(response) {
+                        
+
+                    }).
+                    on('error', function(response) {
+                       console.log('fail add flight');
+                       console.log(response);
+                    }).
+                    on('complete', function(response) {
+                        $scope.clearForm();
+                        $scope.$apply();
+                        $scope.updateFlightDisplay();
+                    }).send();
+            }
             $scope.clearForm = function(){
                 $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
             }
 
         }])
-        .controller('TabController', ['$scope', function($scope) {
-            
-            $scope.tab = 1;
-        
-            $scope.select = function(setTab) {
-                $scope.tab = setTab;
-            };
 
-            $scope.isSelected = function(setTab){
-                if (setTab == $scope.tab){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
-
-        }])
-
-        .controller('RegisterController', ['$scope', 'userService', function($scope,userService) {
+        .controller('RegisterController', ['$scope', '$rootScope', 'userService', 'dataFactory',function($scope, $rootScope, userService,dataFactory) {
             //check for dup username
             $scope.registerInfo = {username:"", firstName:"", lastName:"", email:"" };
             $scope.registerMessage = "";
@@ -149,9 +140,11 @@ angular.module('southwestFareSaverApp')
             $scope.registerUser = function (){
                 $scope.registerMessage = "Loading ...";
 
-                    userService.setUser($scope.registerInfo).
+                    userService.putUser($scope.registerInfo).
                     on('success', function(response) {
-                        $scope.setCurrentUser($scope.registerInfo);
+                        dataFactory.setCurrentUser($scope.registerInfo);
+                        $rootScope.$broadcast('userSet', {});
+
                     }).
                     on('error', function(response) {
                         if (response.message === "The conditional request failed"){ //username already exists
@@ -183,19 +176,20 @@ angular.module('southwestFareSaverApp')
             })
                         
         }])
-    
-    
 
-        .controller('LoginController', ['$scope',  'userService', function($scope,  userService) {
+    .controller('LoginController', ['$scope',  '$rootScope', 'userService','dataFactory', function($scope, $rootScope, userService, dataFactory) {
           $scope.username = ''
           $scope.invalidUsername = false;
           $scope.invalidUsernameString = ""
+
           $scope.login = function () {
             var request = userService.getItem($scope.username);
             request.
             on('success', function(response) {
                 if (validUser(response.data.Item)){
-                    $scope.setCurrentUser(convertUserObjectToJson(response.data.Item));
+                    dataFactory.setCurrentUser(convertUserObjectToJson(response.data.Item));
+                    $rootScope.$emit('userSet', {});
+                    console.log("broadcast");
                     $scope.invalidUsername = false;
                 }
                 else {
@@ -205,6 +199,8 @@ angular.module('southwestFareSaverApp')
             }).
             on('error', function(response) {
                 console.log("Error!");
+                console.log(response);
+                console.log($scope.username);
                 $scope.invalidUsername = true;
                 $scope.invalidUsernameString = "Server Error, please try again later " + " " + response;
             }).
@@ -213,32 +209,38 @@ angular.module('southwestFareSaverApp')
             }).
             send();
        };
-           
+          
     }])
 
-    .controller('ApplicationController', ['$scope', function($scope ) {
+    .controller('TabController', ['$scope', 'dataFactory', function($scope,dataFactory) {
+            $scope.tab = 1;
             $scope.currentUser = null;
-            $scope.userFlights = [];
-            $scope.plotsReady = false;
-            $scope.setCurrentUser = function (user) {
-                $scope.currentUser = user;
+            $scope.getCurrentUser = function(){
+                $scope.currentUser = dataFactory.getCurrentUser();
+                return $scope.currentUser;
+            }
+            $scope.select = function(setTab) {
+                $scope.tab = setTab;
             };
 
-            $scope.addUserFlight = function(flight){
-                //attempt to find fares for this flight
-                $scope.userFlights.push(flight);
+            $scope.isSelected = function(setTab){
+                if (setTab == $scope.tab){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }])
+
+        .controller('JumboController', ['$scope', 'dataFactory', function($scope,dataFactory) {
+            $scope.currentUser = null;
+            $scope.getCurrentUser = function(){
+                $scope.currentUser = dataFactory.getCurrentUser();
+                return $scope.currentUser;
             }
 
-             $scope.resetUserFlights = function(){
-                $scope.userFlights = [];
-             }
+        }])
 
-             $scope.setPlotsReady = function(ready){
-                $scope.plotsReady = ready;
-             }
-
-            $scope.tests = [{'number' : 100},{'number' : 300}];
-
-}])
 
 ;

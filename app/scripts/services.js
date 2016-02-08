@@ -1,48 +1,36 @@
 'use strict';
 
 angular.module('southwestFareSaverApp')
-        .constant("baseURL","http://localhost:3000/")
-        .constant('AUTH_EVENTS', {
-          loginSuccess: 'auth-login-success',
-          loginFailed: 'auth-login-failed',
-          logoutSuccess: 'auth-logout-success',
-          sessionTimeout: 'auth-session-timeout',
-          notAuthenticated: 'auth-not-authenticated',
-          notAuthorized: 'auth-not-authorized'
-        })
 
+         .factory('dataFactory', [ function() {
+          var data = {};
 
-              .service('menuFactory', ['$resource', 'baseURL', function($resource,baseURL) {
-               this.getDishes = function(){
-                                        return $resource(baseURL+"dishes/:id",null,  {'update':{method:'PUT' }});
-                                    };
+          data.currentUser = null;
 
-                this.getPromotions = function(){
-                  return $resource(baseURL+"promotions/:id",null,  {'update':{method:'PUT' }});
-                };
-                        
-        }])
+          data.setCurrentUser = function(user){
+            data.currentUser = user;
+          }
 
-        .factory('corporateFactory',  ['$resource', 'baseURL', function($resource,baseURL) {
-    
-            var corpfac = {};
+          data.getCurrentUser = function(){
+            return data.currentUser;
+          }
 
-            corpfac.getLeaders = function(){
-              return $resource(baseURL+"leadership/:id",null,  {'update':{method:'PUT' }});
-            };
+            data.userFlights = [];
 
-            return corpfac;
-    
-        }])
+                data.addUserFlight = function(flight){
+                  data.userFlights.push(flight);
+                }
 
-            .service('feedbackFactory',  ['$resource', 'baseURL', function($resource,baseURL) {
-    
-            this.getFeedback = function(){
-              return $resource(baseURL+"feedback/:id",null,  {'update':{method:'PUT' }});
-            };
+                data.resetUserFlights = function(){
+                  data.userFlights = [];
+                }
 
-    
-        }])
+                data.getUserFlights = function(){
+                  return data.userFlights;
+                }
+
+          return data;
+         }])
 
             .service('userService', [ function() {
 
@@ -50,7 +38,7 @@ angular.module('southwestFareSaverApp')
                 var table = new AWS.DynamoDB({params: {TableName: 'users'}});
                 return table.getItem({Key : {'username':  { S : String(username)}}})
               };
-              this.setUser = function(registerInfo){
+              this.putUser = function(registerInfo){
                 var table = new AWS.DynamoDB({params: {TableName: 'users'}});
                 return table.putItem({Item : getUserItem(registerInfo),
                                       Expected: {'username': { Exists: false }}

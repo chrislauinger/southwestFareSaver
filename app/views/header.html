@@ -17,8 +17,8 @@
                 <li><a ui-sref="app.aboutus">
                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> About</a>
                 </li>
-                <li><a ui-sref="app.track"> 
-                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Track</a>
+                <li><a ui-sref="app.refund"> 
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Refund</a>
                 </li>
                  <li><a ui-sref="app.search"> 
                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Search</a>
@@ -32,7 +32,7 @@
                </nav>         
 
                
-<header class="jumbotron" >
+<header class="jumbotron" ng-controller="JumboController" >
 
                 <!-- Main component for a primary marketing message or call to action -->
 
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                         <div ng-if="currentUser">
+                         <div ng-if="getCurrentUser()">
                             <h2> Welcome, {{currentUser.username}}! </h2>
                          </div>
                     </div>

@@ -27,12 +27,11 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 }
             })
         
-            .state('app.track', {
-                url:'track',
+            .state('app.refund', {
+                url:'refund',
                 views: {
                     'content@': {
-                        templateUrl : 'views/track.html',
-                        controller  : 'TrackController'                  
+                        templateUrl : 'views/refund.html'                 
                     }
                 }
             })

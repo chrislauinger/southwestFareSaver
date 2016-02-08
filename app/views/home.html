@@ -2,8 +2,8 @@
                     <p style="padding:20px"></p>
                     </div>
 
-   <div class="container" ng-if="!currentUser" ng-controller="TabController">
-     <div class="row row-header">
+   <div class="container"  ng-controller="TabController" ng-show="!getCurrentUser()"> 
+     <div class="row row-header" >
           <div class="col-xs-12 col-sm-6">
             <ul class="nav nav-tabs">
               <li  ng-class="{active:isSelected(1)}"><a ng-click="select(1)">Login</a></li>
@@ -12,7 +12,7 @@
              <div class="tab-content">
             
               <div  class="tab-pane fade in active" ng-show="isSelected(1)">
-                <form class="form-horizontal" name="loginForm" ng-submit="login()" ng-controller="LoginController" novalidate>
+                <form class="form-horizontal" name="loginForm" ng-submit="login()" ng-controller = "LoginController" novalidate>
                             <div class="form-group">
                             <label for="username" class="col-sm-2 control-label">Username</label>
                             <div class="col-sm-8">
