@@ -66,10 +66,8 @@ angular.module('southwestFareSaverApp')
             }
 
             $scope.updateFlightDisplay = function(){
-                console.log(dataFactory.getCurrentUser().username);
                  userFlightService.getFlights(dataFactory.getCurrentUser().username)
                  .on('success', function(response) {
-                        console.log(response);
                         if (response.data.Items.length != $scope.userFlights.length){
                             dataFactory.resetUserFlights();
                             for (var i = 0; i < response.data.Items.length; i++){
@@ -88,14 +86,22 @@ angular.module('southwestFareSaverApp')
             }
 
 
-             $rootScope.$on('userSet', function (event, args) {
+          if (dataFactory.getCurrentUser() != null && dataFactory.getUserFlights().length === 0){
+            $scope.updateFlightDisplay();
+            console.log("initializing plot controller")
+           }
+
+           $rootScope.$on('userFlightsChange', function (event, args) {
                 $scope.updateFlightDisplay();
                 }
-             )
+            )
+
+
+
 
         }]) 
 
-        .controller('FlightFormController', ['$scope', 'userFlightService','dataFactory', function($scope, userFlightService, dataFactory) {
+        .controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', function($scope, $rootScope, userFlightService, dataFactory) {
             
             $scope.startedPlotting = false;
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
@@ -113,7 +119,6 @@ angular.module('southwestFareSaverApp')
 
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
                  .on('success', function(response) {
-                        
 
                     }).
                     on('error', function(response) {
@@ -123,7 +128,7 @@ angular.module('southwestFareSaverApp')
                     on('complete', function(response) {
                         $scope.clearForm();
                         $scope.$apply();
-                        $scope.updateFlightDisplay();
+                        $rootScope.$emit('userFlightsChange', {});
                     }).send();
             }
             $scope.clearForm = function(){
@@ -132,7 +137,7 @@ angular.module('southwestFareSaverApp')
 
         }])
 
-        .controller('RegisterController', ['$scope', '$rootScope', 'userService', 'dataFactory',function($scope, $rootScope, userService,dataFactory) {
+        .controller('RegisterController', ['$scope', 'userService', 'dataFactory',function($scope, userService,dataFactory) {
             //check for dup username
             $scope.registerInfo = {username:"", firstName:"", lastName:"", email:"" };
             $scope.registerMessage = "";
@@ -143,7 +148,6 @@ angular.module('southwestFareSaverApp')
                     userService.putUser($scope.registerInfo).
                     on('success', function(response) {
                         dataFactory.setCurrentUser($scope.registerInfo);
-                        $rootScope.$broadcast('userSet', {});
 
                     }).
                     on('error', function(response) {
@@ -177,7 +181,7 @@ angular.module('southwestFareSaverApp')
                         
         }])
 
-    .controller('LoginController', ['$scope',  '$rootScope', 'userService','dataFactory', function($scope, $rootScope, userService, dataFactory) {
+    .controller('LoginController', ['$scope', 'userService','dataFactory', function($scope, userService, dataFactory) {
           $scope.username = ''
           $scope.invalidUsername = false;
           $scope.invalidUsernameString = ""
@@ -188,8 +192,6 @@ angular.module('southwestFareSaverApp')
             on('success', function(response) {
                 if (validUser(response.data.Item)){
                     dataFactory.setCurrentUser(convertUserObjectToJson(response.data.Item));
-                    $rootScope.$emit('userSet', {});
-                    console.log("broadcast");
                     $scope.invalidUsername = false;
                 }
                 else {
