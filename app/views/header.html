@@ -50,6 +50,9 @@
                          <div ng-if="getCurrentUser()">
                             <h2> Welcome, {{currentUser.username}}! </h2>
                          </div>
+                         <div ng-if="!getCurrentUser()">
+                            <h3> Please login or register on the <a ui-sref="app">home page</a> </h3>
+                         </div>
                     </div>
                     </div>
             </header>

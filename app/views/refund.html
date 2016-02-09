@@ -44,7 +44,7 @@
     </div>
   <div class="col-xs-12 col-sm-12">
 
-                <div ng-repeat="userFlight in userFlights">
+                <div ng-repeat="userFlight in userFlights | orderBy:'date'">
                  <div class="col-xs-12 col-sm-4">
                     {{userFlight.displayStr}} <br>
                     {{userFlight.refundStr}} 
