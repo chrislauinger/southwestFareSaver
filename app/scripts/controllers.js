@@ -105,11 +105,6 @@ angular.module('southwestFareSaverApp')
             
             $scope.startedPlotting = false;
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
-            $scope.currentUser = null;
-            $scope.getCurrentUser = function(){
-                $scope.currentUser = dataFactory.getCurrentUser();
-                return $scope.currentUser;
-            }
             
             //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
@@ -216,15 +211,9 @@ angular.module('southwestFareSaverApp')
 
     .controller('TabController', ['$scope', 'dataFactory', function($scope,dataFactory) {
             $scope.tab = 1;
-            $scope.currentUser = null;
-            $scope.getCurrentUser = function(){
-                $scope.currentUser = dataFactory.getCurrentUser();
-                return $scope.currentUser;
-            }
             $scope.select = function(setTab) {
                 $scope.tab = setTab;
             };
-
             $scope.isSelected = function(setTab){
                 if (setTab == $scope.tab){
                     return true;
@@ -234,8 +223,7 @@ angular.module('southwestFareSaverApp')
                 }
             }
         }])
-
-        .controller('JumboController', ['$scope', 'dataFactory', function($scope,dataFactory) {
+        .controller('UserController', ['$scope', 'dataFactory', function($scope,dataFactory) {
             $scope.currentUser = null;
             $scope.getCurrentUser = function(){
                 $scope.currentUser = dataFactory.getCurrentUser();
