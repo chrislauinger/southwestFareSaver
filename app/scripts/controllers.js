@@ -42,14 +42,15 @@ angular.module('southwestFareSaverApp')
                                 var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
                                 var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                                 flight.fareHistory.push(fareItem);
-                                if (j === (response.data.Items.length-1)){
-                                    if (fareItem.currentPrice >= fareItem.cost){
-                                        flight.refundStr = "No Refund Currently";
-                                    }
-                                    else {
-                                        flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (fareItem.cost - fareItem.currentPrice).toString();
-                                    }
-                                }
+                        }
+                        
+                        flight.fareHistory.sort(compareFares);
+                        var lastestFare = flight.fareHistory[flight.fareHistory.length -1];
+                        if (lastestFare.currentPrice >= lastestFare.cost){
+                            flight.refundStr = "No Refund Currently";
+                        }
+                        else {
+                            flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
                         }
                         flight.fareHistory = {dataset0 : flight.fareHistory};
                         if (i === ($scope.userFlights.length-1)){ //signal last fare pushed, ready to plots

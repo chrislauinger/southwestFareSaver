@@ -52,8 +52,9 @@ angular.module('southwestFareSaverApp')
                 var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
                 return table.putItem({Item : getUserFlightItem(flightInfo, username)});
               }
-              this.getFlights = function(username){  
+              this.getFlights = function(username){  //TODO: filter out old dates
                 var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
+                //var dateExpression = "#date >= :currentDate"
                 return table.query({KeyConditions: { 
                                       'username' : {
                                         ComparisonOperator : 'EQ',

@@ -6,6 +6,14 @@ var monthNames = [
   "Nov", "Dec"
 ];
 
+function compareFares(a,b) {
+  if (a.date < b.date)
+    return -1;
+  else if (a.date > b.date)
+    return 1;
+  else 
+    return 0;
+}
 
 function UserFlight(data){
     this.date = new Date();
