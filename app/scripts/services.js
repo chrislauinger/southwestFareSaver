@@ -64,6 +64,13 @@ angular.module('southwestFareSaverApp')
                                         AttributeValueList : [{'S' : String(username)}]
                                       }}});
               }
+              this.deleteFlight = function(flightInfo){
+                var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
+                return table.deleteItem({Key: { 
+                                      'username' : {'S' : String(flightInfo.username)},
+                                      'flight_key' : {'S' : String(flightInfo.flightKey)}
+                                    }});
+              }
         }])
 
              .service('fareService', [ function() {

@@ -96,6 +96,19 @@ angular.module('southwestFareSaverApp')
                 }
             )
 
+           $scope.deleteFlight = function(flight){
+            console.log(flight);
+            userFlightService.deleteFlight(flight)
+            .on('success', function(response) {
+                console.log("deleteFlight")
+                //TODO: update plots after delete
+            }).
+            on('error', function(response) {
+                 console.log('fail to delete flight');
+                 console.log(response);
+             }).send();
+           }
+
 
 
 

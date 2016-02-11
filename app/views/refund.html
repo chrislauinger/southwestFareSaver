@@ -47,7 +47,8 @@
                 <div ng-repeat="userFlight in userFlights | orderBy:'date'">
                  <div class="col-xs-12 col-sm-4">
                     {{userFlight.displayStr}} <br>
-                    {{userFlight.refundStr}} 
+                    {{userFlight.refundStr}}  <br>
+                     <button class="glyphicon glyphicon-remove" type="button" ng-click="deleteFlight(userFlight)"></button>
                     </div>
                  <div class="col-xs-12 col-sm-8">
                     <div class="my-chart">
