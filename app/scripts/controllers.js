@@ -89,7 +89,6 @@ angular.module('southwestFareSaverApp')
 
           if (dataFactory.getCurrentUser() != null && dataFactory.getUserFlights().length === 0){
             $scope.updateFlightDisplay();
-            console.log("initializing plot controller")
            }
 
            $rootScope.$on('userFlightsChange', function (event, args) {
