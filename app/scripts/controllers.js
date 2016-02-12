@@ -69,12 +69,10 @@ angular.module('southwestFareSaverApp')
             $scope.updateFlightDisplay = function(){
                  userFlightService.getFlights(dataFactory.getCurrentUser().username)
                  .on('success', function(response) {
-                        if (response.data.Items.length != $scope.userFlights.length){
                             dataFactory.resetUserFlights();
                             for (var i = 0; i < response.data.Items.length; i++){
                                 dataFactory.addUserFlight(new UserFlight(response.data.Items[i]));
                             }
-                        }
                     }).
                     on('error', function(response) {
                        console.log('fail get flight');
