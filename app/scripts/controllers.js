@@ -24,7 +24,7 @@ angular.module('southwestFareSaverApp')
 
             ],
             axes: {x: {key: "date", type : "date"},
-                    y: {min : 0}
+                    y: {min : 0, max : 100}
                 },
             margin: {
                 top: 0,
@@ -40,17 +40,19 @@ angular.module('southwestFareSaverApp')
 
             var minCost = 1000000;
             var maxCost = 0;
-            flight.fareHistory.dataset0.forEach(function(fareItem, i){
-                var currentPrice = fareItem.currentPrice;
-                var cost = fareItem.cost;
-                if (currentPrice > maxCost){ maxCost = currentPrice;}
-                if (currentPrice < minCost){ minCost = currentPrice;}
-                if (cost > maxCost){ maxCost = cost;}
-                if (cost < minCost){ minCost = cost;}
-            });
-            var buffer = maxCost * 0.1
-            defaultOptions.axes.y.min = minCost - buffer
-            defaultOptions.axes.y.max = maxCost + buffer;
+            if (flight.fareHistory.dataset0 !== undefined){
+                flight.fareHistory.dataset0.forEach(function(fareItem, i){
+                    var currentPrice = fareItem.currentPrice;
+                    var cost = fareItem.cost;
+                    if (currentPrice > maxCost){ maxCost = currentPrice;}
+                    if (currentPrice < minCost){ minCost = currentPrice;}
+                    if (cost > maxCost){ maxCost = cost;}
+                    if (cost < minCost){ minCost = cost;}
+                });
+                var buffer = maxCost * 0.1
+                defaultOptions.axes.y.min = minCost - buffer;
+                defaultOptions.axes.y.max = maxCost + buffer;
+            }
             return currentOptions;
           }
 
@@ -124,11 +126,10 @@ angular.module('southwestFareSaverApp')
             )
 
            $scope.deleteFlight = function(flight){
-            console.log(flight);
             userFlightService.deleteFlight(flight)
             .on('success', function(response) {
                 console.log("deleteFlight")
-                //TODO: update plots after delete
+                $scope.updateFlightDisplay();
             }).
             on('error', function(response) {
                  console.log('fail to delete flight');
@@ -144,7 +145,7 @@ angular.module('southwestFareSaverApp')
         .controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', function($scope, $rootScope, userFlightService, dataFactory) {
             
             $scope.startedPlotting = false;
-            $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
+            $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false, sentEmail : false};
             
             //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
@@ -169,7 +170,7 @@ angular.module('southwestFareSaverApp')
                     }).send();
             }
             $scope.clearForm = function(){
-                $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false};
+                $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false , sentEmail : false};
             }
 
         }])

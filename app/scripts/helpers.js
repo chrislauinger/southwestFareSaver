@@ -73,7 +73,8 @@ var  getUserFlightItem = function(flightInfo, username){
     "date" : {"N" : dateStr},
     "flight_number" : {"N" : numberStr },
     "cost" : {"N" : flightInfo.cost.toString()},
-    "using_points" : {"BOOL" : flightInfo.usingPoints}
+    "using_points" : {"BOOL" : flightInfo.usingPoints},
+    "sent_email" : {"BOOL" : flightInfo.sentEmail}
   }
   return item;
 }
