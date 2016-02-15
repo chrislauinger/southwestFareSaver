@@ -47,8 +47,8 @@
                 <div ng-repeat="userFlight in userFlights | orderBy:'date'">
                  <div class="col-xs-12 col-sm-3">
                     {{userFlight.displayStr}} <br>
+                    Flight #:  {{userFlight.flightNumber}} <br>
                     {{userFlight.refundStr}}  <br>
-                    
                     </div>
                  <div class="col-xs-12 col-sm-8">
                     <div class="my-chart">
