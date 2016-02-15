@@ -31,6 +31,7 @@ angular.module('southwestFareSaverApp')
            $scope.userFlights = dataFactory.getUserFlights();
 
            $scope.addFaresToUserFlights = function(){
+                 var finishedFlights = 0;
                  dataFactory.getUserFlights().forEach(function(flight, i){
                     fareService.getFares(flight)
                     .on('success', function(response){
@@ -53,7 +54,8 @@ angular.module('southwestFareSaverApp')
                             flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
                         }
                         flight.fareHistory = {dataset0 : flight.fareHistory};
-                        if (i === ($scope.userFlights.length-1)){ //signal last fare pushed, ready to plots
+                        finishedFlights = finishedFlights + 1;
+                        if (finishedFlights === ($scope.userFlights.length)){ //signal last fare pushed, ready to plots
                             $scope.userFlights = dataFactory.getUserFlights();
                             $scope.$apply();
                         }
@@ -122,7 +124,9 @@ angular.module('southwestFareSaverApp')
                 //check origin
                 if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
                 if (!validAirportCode($scope.flightInfo.destination)){ console.log("invalid destination")};
-
+                if ($scope.flightInfo.cost > 2000){
+                    $scope.flightInfo.usingPoints = true;
+                }
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
                  .on('success', function(response) {
 

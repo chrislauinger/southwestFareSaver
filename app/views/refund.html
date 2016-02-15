@@ -7,30 +7,26 @@
          </ul>
      </div>
      <div class="col-xs-12" ng-show="getCurrentUser()"  ng-controller="FlightFormController" align = "center">
-         <h3>Add Booked Flight</h3>
+         <h3>Add Booked Flight (one way)</h3>
                 <form class="form-inline" name="bookedForm" ng-submit="submitFlight()" novalidate>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.origin.$error.required && !bookedForm.origin.$pristine }">
-                <input type="text" class="form-control" id="origin" name="origin" placeholder="Origin (3 letter code)"
+                <input type="text" class="form-control" id="origin" name="origin" placeholder="Depart"
                     ng-model="flightInfo.origin" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.destination.$error.required && !bookedForm.destination.$pristine }">
-                <input type="text" class="form-control" id="destination" name="destination" placeholder="Destination (3 letter code)"
+                <input type="text" class="form-control" id="destination" name="destination" placeholder="Arrive"
                     ng-model="flightInfo.destination" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.date.$error.required && !bookedForm.date.$pristine }">
                 <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine }">
-                <input type="number" class="form-control" id="flightNumber" name="flightNumber" placeholder="Flight Number (first flight)"
+                <input type="number" class="form-control" id="flightNumber" name="flightNumber" placeholder="Flight # (1st flight)"
                     ng-model="flightInfo.flightNumber" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.cost.$error.required && !bookedForm.cost.$pristine }">
-                <input type="number" class="form-control" id="cost" name="cost" placeholder="Cost (dollors or points)"
+                <input type="number" class="form-control" id="cost" name="cost" placeholder="Cost ($ or points)"
                     ng-model="flightInfo.cost" required>
-                </div>
-                <div class="form-group">
-                <input type="checkbox" class="form-control" id="usingPoints" name="usingPoints" placeholder="Using Points"
-                    ng-model="flightInfo.usingPoints"> Using Points
                 </div>
                 <button type="submit" class="btn btn-primary" ng-disabled="bookedForm.$invalid">Add Flight</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="clearForm()">Clear Form</button> 
@@ -42,22 +38,26 @@
  
  <div class="row row-content" ng-controller="PlotController" ng-show="getCurrentUser()">
     <div class="col-xs-12" align = "center">
-        <h3>Booked Flights </h3>
-         <button type="button" class="btn btn-default btn-sm" ng-click="updateFlightDisplay()">Refresh</button> 
+        <h3>Booked Flights </h3> 
+        <p style="padding:10px"></p>
+         <!-- <button type="button" class="btn btn-default btn-sm" ng-click="updateFlightDisplay()">Refresh</button>  -->
     </div>
   <div class="col-xs-12 col-sm-12">
 
                 <div ng-repeat="userFlight in userFlights | orderBy:'date'">
-                 <div class="col-xs-12 col-sm-4">
+                 <div class="col-xs-12 col-sm-3">
                     {{userFlight.displayStr}} <br>
                     {{userFlight.refundStr}}  <br>
-                     <button class="glyphicon glyphicon-remove" type="button" ng-click="deleteFlight(userFlight)"></button>
+                    
                     </div>
                  <div class="col-xs-12 col-sm-8">
                     <div class="my-chart">
                         <linechart data="userFlight.fareHistory" options="options"></linechart>
                     </div>
                     </div>
+                 <div class="col-xs-12 col-sm-1">
+                     <button id = "plotDelete" class="btn btn-danger btn-sm" type="button" ng-click="deleteFlight(userFlight)">Delete</button>
+                 </div>
                  <div class="col-xs-12 col-sm-12">
                     <p style="padding:30px"></p>
                     </div>
