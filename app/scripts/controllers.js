@@ -3,13 +3,13 @@
 angular.module('southwestFareSaverApp')
 
     .controller('PlotController', ['$scope', '$rootScope', 'fareService', 'userFlightService', 'dataFactory', function($scope, $rootScope, fareService, userFlightService, dataFactory) {
-          $scope.options = {
+          var defaultOptions = {
             series: [
               {
                 axis: "y",
                 dataset : "dataset0",
                 key: "currentPrice",
-                label: "M",
+                label: "current price",
                 color: "#0057e7",
                 type: ['line']
               },
@@ -17,7 +17,7 @@ angular.module('southwestFareSaverApp')
                 axis: "y",
                 dataset: "dataset0",
                 key: "cost",
-                label: "P",
+                label: "purchase price",
                 color: "#028900",
                 type: ['line']
               },
@@ -25,8 +25,34 @@ angular.module('southwestFareSaverApp')
             ],
             axes: {x: {key: "date", type : "date"},
                     y: {min : 0}
-                }
+                },
+            margin: {
+                top: 0,
+                right: 40,
+                bottom: 20,
+                left: 40
+            }
+
           };
+
+          $scope.getOptions = function(flight){
+            var currentOptions = defaultOptions;
+
+            var minCost = 1000000;
+            var maxCost = 0;
+            flight.fareHistory.dataset0.forEach(function(fareItem, i){
+                var currentPrice = fareItem.currentPrice;
+                var cost = fareItem.cost;
+                if (currentPrice > maxCost){ maxCost = currentPrice;}
+                if (currentPrice < minCost){ minCost = currentPrice;}
+                if (cost > maxCost){ maxCost = cost;}
+                if (cost < minCost){ minCost = cost;}
+            });
+            var buffer = maxCost * 0.1
+            defaultOptions.axes.y.min = minCost - buffer
+            defaultOptions.axes.y.max = maxCost + buffer;
+            return currentOptions;
+          }
 
            $scope.userFlights = dataFactory.getUserFlights();
 
@@ -38,22 +64,23 @@ angular.module('southwestFareSaverApp')
                         if (response.data.Items.length == 0){
                             console.log("Did not find any fares")
                         }
-                        for (var j = 0; j < response.data.Items.length; j++){
+                        else {
+                            for (var j = 0; j < response.data.Items.length; j++){
                                 var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
                                 var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
                                 var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                                 flight.fareHistory.push(fareItem);
+                            }
+                            flight.fareHistory.sort(compareFares);
+                            var lastestFare = flight.fareHistory[flight.fareHistory.length -1];
+                            if (lastestFare.currentPrice >= lastestFare.cost){
+                                flight.refundStr = "No Refund Currently";
+                            }
+                            else {
+                                flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
+                            }
+                            flight.fareHistory = {dataset0 : flight.fareHistory};
                         }
-                        
-                        flight.fareHistory.sort(compareFares);
-                        var lastestFare = flight.fareHistory[flight.fareHistory.length -1];
-                        if (lastestFare.currentPrice >= lastestFare.cost){
-                            flight.refundStr = "No Refund Currently";
-                        }
-                        else {
-                            flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
-                        }
-                        flight.fareHistory = {dataset0 : flight.fareHistory};
                         finishedFlights = finishedFlights + 1;
                         if (finishedFlights === ($scope.userFlights.length)){ //signal last fare pushed, ready to plots
                             $scope.userFlights = dataFactory.getUserFlights();
