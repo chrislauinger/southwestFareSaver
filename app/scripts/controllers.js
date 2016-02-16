@@ -149,9 +149,6 @@ angular.module('southwestFareSaverApp')
             
             //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
-                //check origin
-                if (!validAirportCode($scope.flightInfo.origin)){ console.log("invalid origin")};
-                if (!validAirportCode($scope.flightInfo.destination)){ console.log("invalid destination")};
                 if ($scope.flightInfo.cost > 2000){
                     $scope.flightInfo.usingPoints = true;
                 }
@@ -171,6 +168,11 @@ angular.module('southwestFareSaverApp')
             }
             $scope.clearForm = function(){
                 $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false , sentEmail : false};
+                $scope.bookedForm.$setPristine();
+            }
+
+            $scope.validAirport = function(val){
+                return validAirportCode(val);
             }
 
         }])
@@ -179,7 +181,7 @@ angular.module('southwestFareSaverApp')
             //check for dup username
             $scope.registerInfo = {username:"", firstName:"", lastName:"", email:"" };
             $scope.registerMessage = "";
-            $scope.takenUsername = "chrislauinger"; //just 
+            $scope.takenUsername = "xlau"; //just 
             $scope.registerUser = function (){
                 $scope.registerMessage = "Loading ...";
 
@@ -190,8 +192,8 @@ angular.module('southwestFareSaverApp')
                     }).
                     on('error', function(response) {
                         if (response.message === "The conditional request failed"){ //username already exists
-                            $scope.registerMessage = "username already exists: " + $scope.registerInfo.username;
                             $scope.takenUsername = $scope.registerInfo.username;
+                            $scope.registerMessage = "username already exists: " + $scope.takenUsername;
                         }
                         else{
                             $scope.registerMessage = response;

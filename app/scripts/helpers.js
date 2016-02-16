@@ -80,6 +80,7 @@ var  getUserFlightItem = function(flightInfo, username){
 }
 
 var validAirportCode = function(airport){
+    if (typeof(airport) != "string" || airport === ""){ return false;}
     var cities = ['GSP', 'FNT', 'BOS', 'OAK', 'LIT', 'BOI', 'SAN', 'DCA', 'LBB', 'BWI', 
     'PIT', 'RIC', 'SAT', 'JAX', 'IAD', 'JAN', 'HRL', 'CHS', 'EYW', 'BNA',
     'PHL', 'SNA', 'SFO', 'PHX', 'LAX', 'MAF', 'LAS', 'CRP', 'CMH', 'FLL', 
