@@ -3,19 +3,30 @@
         <div class="col-xs-12">
          <ul class="breadcrumb">
              <li><a ui-sref="app">Home</a></li>
-             <li class="active">About Us</li>
+             <li class="active">About</li>
          </ul>
      </div>
      <div class="col-xs-12">
-         <h3>About Us</h3>
+         <h3>About </h3>
          <hr>
      </div>
  </div>
  
  <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
-        <p>The Southwest Fare Saver web app was created to supplement <a href="https://www.southwest.com"> Southwest's website</a>. The app will check for <a ui-sref="app.refund"> refunds </a> on flights you have already booked to see if they get any cheaper. Current Southwest policy allows you to rebook a flight and keep the difference in price. The app will also automatically <a ui-sref="app.checkin"> check you in </a> for flights, excactly 24 hours before the flight so you can get at the front of the "A" boarding group</p>
+        <p>The Southwest Fare Saver web app was created to supplement <a href="https://www.southwest.com"> Southwest's website</a>. </p>
+         <p style="padding:20px;"></p>
+        <h4> <a ui-sref="app.refund"> Refund Scanning </a> </h4>
+        
+        <p>The app will scan southwest flight prices ever 6 hours. Once you input your flight information, an email will be sent to you if the price goes down. Additionally, you can watch how the flight price changes over time. Check out this article explaining how to get your money or points back if the price of your flight goes down: <a href= "http://dealswelike.boardingarea.com/2014/02/28/if-a-southwest-flight-goes-down-in-price/"> Refund Instructions </a> </p>
+        <p>Another way to use this tool is to input flights that you are considering buying but are too expensive. Just set the cost of your flight to the price you are willing to pay and you will receive an email if that flight's price drops to your desired cost. </p>
+         <p style="padding:20px;"></p>
+         
+        <h4> <a ui-sref="app.checkin"> Automatic Check-In  </a> </h4>
+        <p> This feature is under development. </p>
+        <p> If you have input your confirmation number, the app will also automatically check you in to your flight, excactly 24 hours before the flight. </p>
         <p style="padding:20px;"></p>
+
         <div class="well">
             <blockquote>
                 <p>A man is rich in proportion to the number of things he can afford to leave alone</p>
