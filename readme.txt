@@ -15,6 +15,7 @@ sudo npm install angular-ui-router
 sudo npm install n3-charts
 sudo npm install bootstrap
 sudo npm install font-awesome
+sudo npm install jquery
 
 Startup web app:
 http-server -p 8081
