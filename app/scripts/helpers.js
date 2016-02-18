@@ -33,8 +33,7 @@ function UserFlight(data){
     this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
 
-  }
-
+}
 
 var validUser = function(data){
   if (typeof data === 'undefined'){ return false;}

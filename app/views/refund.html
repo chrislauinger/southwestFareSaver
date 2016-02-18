@@ -18,7 +18,7 @@
                     ng-model="flightInfo.destination" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.date.$error.required && !bookedForm.date.$pristine }">
-                <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required>
+                <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required min="{{currentDate | date:'yyyy-MM-dd'}}" required>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine }">
                 <input type="number" class="form-control" id="flightNumber" name="flightNumber" placeholder="Flight # (1st flight)"

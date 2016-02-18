@@ -146,6 +146,7 @@ angular.module('southwestFareSaverApp')
             
             $scope.startedPlotting = false;
             $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false, sentEmail : false};
+            $scope.currentDate = new Date();
             
             //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
