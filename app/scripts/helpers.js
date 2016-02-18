@@ -32,6 +32,7 @@ function UserFlight(data){
     var month = monthNames[this.date.getMonth()];
     this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
+    this.foundRefund = false;
 
 }
 

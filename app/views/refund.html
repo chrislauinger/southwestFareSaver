@@ -1,12 +1,6 @@
  <div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-         <ul class="breadcrumb">
-             <li><a ui-sref="app">Home</a></li>
-             <li class="active">Refund</li>
-         </ul>
-     </div>
-     <div class="col-xs-12" ng-show="getCurrentUser()"  ng-controller="FlightFormController" align = "center">
+    <div class="row row-content" ng-show="getCurrentUser()"  ng-controller="FlightFormController">
+     <div class="col-xs-12" align = "center">
          <h3>Add Booked Flight (one way)</h3>
                 <form class="form-inline" name="bookedForm" ng-submit="submitFlight()" novalidate>
                 <div class="form-group" ng-class="{ 'has-error' : bookedForm.origin.$error.required && !bookedForm.origin.$pristine || (!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine) }">
@@ -35,8 +29,7 @@
      </div>
  </div>
 
-<hr>
- 
+
  <div class="row row-content" ng-controller="PlotController" ng-show="getCurrentUser()">
     <div class="col-xs-12" align = "center">
         <h3>Booked Flights </h3> 
@@ -50,7 +43,10 @@
                     {{userFlight.displayStr}} <br>
                     Flight #:  {{userFlight.flightNumber}} <br>
                     {{userFlight.refundStr}}  <br>
+                    <div ng-show="userFlight.foundRefund">
+                    <img src="images/treasure.jpg" class="img-responsive" width="150">
                     </div>
+                </div>
                  <div class="col-xs-12 col-sm-8">
                     <div class="my-chart">
                         <linechart data="userFlight.fareHistory" options="getOptions(userFlight)"></linechart>

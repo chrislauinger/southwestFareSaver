@@ -65,6 +65,7 @@ angular.module('southwestFareSaverApp')
                     .on('success', function(response){
                         if (response.data.Items.length == 0){
                             console.log("Did not find any fares")
+                            console.log(response)
                         }
                         else {
                             for (var j = 0; j < response.data.Items.length; j++){
@@ -80,6 +81,7 @@ angular.module('southwestFareSaverApp')
                             }
                             else {
                                 flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
+                                flight.foundRefund = true;
                             }
                             flight.fareHistory = {dataset0 : flight.fareHistory};
                         }
@@ -269,12 +271,20 @@ angular.module('southwestFareSaverApp')
                 }
             }
         }])
-        .controller('UserController', ['$scope', 'dataFactory', function($scope,dataFactory) {
+        .controller('UserController', ['$scope', '$state' ,'dataFactory', function($scope, $state, dataFactory) {
             $scope.currentUser = null;
             $scope.getCurrentUser = function(){
                 $scope.currentUser = dataFactory.getCurrentUser();
                 return $scope.currentUser;
             }
+            $scope.isHomeState = function(){
+                var state = $state.current;
+                if (state.name === 'app'){
+                    return true;
+                }
+                return false;
+            }
+            
 
         }])
 
