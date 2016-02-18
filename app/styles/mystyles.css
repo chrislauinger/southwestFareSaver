@@ -84,8 +84,3 @@ body {
 .affix {
   top: 100px;
 }
-
-#plotDelete {
-  align : right;
-  vertical-align: middle;
-}
