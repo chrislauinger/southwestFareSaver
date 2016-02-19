@@ -20,39 +20,35 @@
                 <li><a ui-sref="app.refund"> 
                     <span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Refund</a>
                 </li>
-                 <li><a ui-sref="app.checkin"> 
+                <li><a ui-sref="app.checkin"> 
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Check-In</a>
                 </li>
-                           </ul>
-                       </div>
-                   </div>
-               </nav>         
+            </ul>
+        </div>
+    </div>
+</nav>         
 
-               
+
 <header class="jumbotron">
+    <div class="container" >
+        <div class="row row-header">
+            <div class="col-xs-12 col-sm-8" align = "center">
+                <h1>Dragon Fare Scanner</h1>
+                <p> searching for Southwest price drops </p>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <p style="padding:5px;"></p>
 
-                <!-- Main component for a primary marketing message or call to action -->
-
-                <div class="container" >
-                    <div class="row row-header">
-                        <div class="col-xs-12 col-sm-8" align = "center">
-                            <h1>Dragon Fare Scanner</h1>
-                            <p> searching for Southwest price drops </p>
-                           </div>
-                           <div class="col-xs-12 col-sm-4">
-                            <p style="padding:5px;"></p>
-
-                            <img src="app/images/dragon.jpg" class="img-responsive" height="100">
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                         <div ng-if="getCurrentUser()">
-                            <h2> Welcome, {{currentUser.username}}! </h2>
-                         </div>
-                         <div ng-if="!getCurrentUser() && !isHomeState()">
-
-                            <h3> Please login or register on the <a ui-sref="app" style="color:#FFCC00">here</a> </h3>
-                         </div>
-                    </div>
-                    </div>
-            </header>
+                <img src="app/images/dragon.jpg" class="img-responsive" height="100">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div ng-if="getCurrentUser()">
+                <h2> Welcome, {{currentUser.username}}! </h2>
+            </div>
+            <div ng-if="!getCurrentUser() && !isHomeState()">
+                <h3> Please login or register on the <a ui-sref="app" style="color:#FFCC00">here</a> </h3>
+            </div>
+        </div>
+    </div>
+</header>

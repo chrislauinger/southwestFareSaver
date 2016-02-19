@@ -2,9 +2,7 @@
 
 angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart'])
 .config(function($stateProvider, $urlRouterProvider) {
-        $stateProvider
-        
-            // route for the home page
+    $stateProvider
             .state('app', {
                 url:'/',
                 views: {
@@ -17,7 +15,6 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 }
 
             })
-        
             .state('app.aboutus', {
                 url:'aboutus',
                 views: {
@@ -26,7 +23,6 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                     }
                 }
             })
-        
             .state('app.refund', {
                 url:'refund',
                 views: {
@@ -35,16 +31,14 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                     }
                 }
             })
-
             .state('app.checkin', {
                 url: 'checkin',
                 views: {
                     'content@': {
                         templateUrl : 'app/views/checkin.html'
-                   }
+                    }
                 }
             });
-    
-        $urlRouterProvider.otherwise('/');
-    })
+            $urlRouterProvider.otherwise('/');
+        })
 ;
