@@ -9,10 +9,10 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url:'/',
                 views: {
                     'header': {
-                        templateUrl : 'views/header.html',
+                        templateUrl : 'app/views/header.html',
                     },
                     'content': {
-                        templateUrl : 'views/home.html'
+                        templateUrl : 'app/views/home.html'
                     }
                 }
 
@@ -22,7 +22,7 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url:'aboutus',
                 views: {
                     'content@': {
-                        templateUrl : 'views/aboutus.html'                
+                        templateUrl : 'app/views/aboutus.html'                
                     }
                 }
             })
@@ -31,7 +31,7 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url:'refund',
                 views: {
                     'content@': {
-                        templateUrl : 'views/refund.html'                 
+                        templateUrl : 'app/views/refund.html'                 
                     }
                 }
             })
@@ -40,7 +40,7 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url: 'checkin',
                 views: {
                     'content@': {
-                        templateUrl : 'views/checkin.html'
+                        templateUrl : 'app/views/checkin.html'
                    }
                 }
             });
