@@ -145,6 +145,8 @@ $scope.deleteFlight = function(flight){
                 if ($scope.flightInfo.cost > 2000){
                     $scope.flightInfo.usingPoints = true;
                 }
+                $scope.flightInfo.origin = $scope.flightInfo.origin.toUpperCase();
+                $scope.flightInfo.destination = $scope.flightInfo.destination.toUpperCase();
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
                 .on('success', function(response) {
 
