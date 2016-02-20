@@ -78,15 +78,21 @@ angular.module('southwestFareSaverApp')
   this.getFares = function(userFlight){  
     var table = new AWS.DynamoDB({params: {TableName: 'fares'}});
     var flightKeyExpression = '#flightKey = :keyVal';
+    var dateLowerBound = userFlight.date.getTime();
+    var dateUpperBound = dateLowerBound + (86400 * 1000 * 2);
     return table.query({FilterExpression: flightKeyExpression,
      ExpressionAttributeValues : {':keyVal' : { 'S' : String(userFlight.flightKey)}},
      ExpressionAttributeNames : {'#flightKey' : 'flight_key'},
      KeyConditions: {
        'route' : {
-        ComparisonOperator : 'EQ',
-        AttributeValueList : [{'S' : String(userFlight.route)}]
+          ComparisonOperator : 'EQ',
+          AttributeValueList : [{'S' : String(userFlight.route)}]
+        },
+        'sort_key' : {
+          ComparisonOperator : 'BETWEEN',
+          AttributeValueList : [{'S' : String(dateLowerBound)}, {'S' : String(dateUpperBound)}]
+        }
       }
-    }
   });
   }
 }])
