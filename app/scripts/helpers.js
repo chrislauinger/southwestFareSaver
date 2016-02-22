@@ -29,7 +29,7 @@ function UserFlight(data){
     this.route = this.origin.toString() + "_" + this.destination.toString();
 
     var day = this.date.getUTCDate();
-    var month = monthNames[this.date.getMonth()];
+    var month = monthNames[this.date.getUTCMonth()];
     this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
     this.foundRefund = false;
