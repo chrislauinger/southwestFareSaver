@@ -58,11 +58,7 @@ $scope.addFaresToUserFlights = function(){
    dataFactory.getUserFlights().forEach(function(flight, i){
     fareService.getFares(flight)
     .on('success', function(response){
-        if (response.data.Items.length == 0){
-            console.log("Did not find any fares")
-            console.log(response)
-        }
-        else {
+         if (response.data.Items.length > 0){
             for (var j = 0; j < response.data.Items.length; j++){
                 var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
                 var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
@@ -145,9 +141,11 @@ $scope.hasFares = function(flight){
     $scope.startedPlotting = false;
     $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false, sentEmail : false};
     $scope.currentDate = new Date();
+    $scope.scraping = false;
 
             //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
+                $scope.scraping = true; 
                 if ($scope.flightInfo.cost > 2000){
                     $scope.flightInfo.usingPoints = true;
                 }
@@ -162,24 +160,20 @@ $scope.hasFares = function(flight){
                  console.log(response);
              }).
                 on('complete', function(response) {
-                    //TODO: some sort of loading message for "searching for flights"
-                    //new code
-                    // pythonFactory.runUserFares($scope.flightInfo)
-                    // .then(function successCallback(response) {
-                    //         console.log("success");
-                    //         console.log(response);
-                    //         $scope.clearForm();
-                    //         $rootScope.$emit('userFlightsChange', {});
-                    // }, function errorCallback(response) {
-                    //     console.log("fail");
-                    //      console.log(response);
-                    // })
-                    // console.log("attempted python");
-
-                    //old code
-                    $scope.clearForm();
-                    $scope.$apply();
-                    $rootScope.$emit('userFlightsChange', {});
+                    pythonFactory.runUserFares($scope.flightInfo)
+                    .then(function successCallback(response) {
+                            console.log("success");
+                            console.log(response);
+                            $scope.scraping = false;
+                            $scope.clearForm();
+                            $rootScope.$emit('userFlightsChange', {});
+                    }, function errorCallback(response) {
+                         console.log("fail");
+                         console.log(response);
+                        $scope.scraping = false;
+                        $scope.clearForm();
+                        $rootScope.$emit('userFlightsChange', {});
+                    })
                 }).send();
             }
             $scope.clearForm = function(){

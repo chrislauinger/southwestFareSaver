@@ -28,7 +28,12 @@
                 <input type="number" class="form-control" id="cost" name="cost" placeholder="Cost ($ or points)"
                 ng-model="flightInfo.cost" required>
             </div>
+                 
+
+
             <button type="submit" class="btn btn-primary" ng-disabled="bookedForm.$invalid || !validAirport(bookedForm.origin.$viewValue) || !validAirport(bookedForm.destination.$viewValue) ">Add Flight</button>
+            <span ng-show = "scraping" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+
              <span ng-show="( bookedForm.origin.$error.required && !bookedForm.origin.$pristine) || (bookedForm.destination.$error.required && !bookedForm.destination.$pristine) || (bookedForm.date.$error.required && !bookedForm.date.$pristine) || (bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine) || ( bookedForm.cost.$error.required && !bookedForm.cost.$pristine)" class="help-block">All Fields Required </span>
              <span ng-show="(!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine)" class="help-block">Origin: Enter a valid airport code (3 letters - no international) </span>
              <span ng-show="(!validAirport(bookedForm.destination.$viewValue) && !bookedForm.destination.$pristine)" class="help-block">Destination: Enter a valid airport code (3 letters - no international) </span>
@@ -60,8 +65,8 @@
             <div class="my-chart" ng-show = "hasFares(userFlight)">
                 <linechart data="userFlight.fareHistory" options="getOptions(userFlight)"></linechart>
             </div>
-            <div ng-show = "!hasFares(userFlight)" >
-                <p align = "center"> No fares found yet. Read more here. </p>
+            <div class = "hidden-xs" ng-show = "!hasFares(userFlight)">
+                <p style="text-align:center; width:75%;position: relative;"> No fares found yet. Read more here. </p>
             </div>
         </div>
         <div class="col-sm-1" ng-show="allowDeleteSelected" align = "center">
