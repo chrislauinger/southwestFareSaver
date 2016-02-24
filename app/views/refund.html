@@ -57,8 +57,11 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-8">
-            <div class="my-chart">
+            <div class="my-chart" ng-show = "hasFares(userFlight)">
                 <linechart data="userFlight.fareHistory" options="getOptions(userFlight)"></linechart>
+            </div>
+            <div ng-show = "!hasFares(userFlight)" >
+                <p align = "center"> No fares found yet. Read more here. </p>
             </div>
         </div>
         <div class="col-sm-1" ng-show="allowDeleteSelected" align = "center">

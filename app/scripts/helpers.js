@@ -25,7 +25,7 @@ function UserFlight(data){
     this.cost = parseInt(data.cost.N);
     this.usingPoints = data.using_points.BOOL;
     this.flightKey = data.flight_key.S;
-    this.fareHistory = [];
+    this.fareHistory = {dataset0 : []};
     this.route = this.origin.toString() + "_" + this.destination.toString();
 
     var day = this.date.getUTCDate();
@@ -33,6 +33,10 @@ function UserFlight(data){
     this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
     this.foundRefund = false;
+
+    this.hasFares = function(){
+      return (this.fareHistory.dataset0.length > 0)
+    }
 
 }
 

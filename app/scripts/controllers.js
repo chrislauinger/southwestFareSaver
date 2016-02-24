@@ -35,7 +35,7 @@ $scope.getOptions = function(flight){
 
     var minCost = 1000000;
     var maxCost = 0;
-    if (flight.fareHistory.dataset0 !== undefined){
+    if (flight.fareHistory.dataset0.length > 0){
         flight.fareHistory.dataset0.forEach(function(fareItem, i){
             var currentPrice = fareItem.currentPrice;
             var cost = fareItem.cost;
@@ -67,10 +67,10 @@ $scope.addFaresToUserFlights = function(){
                 var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
                 var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
                 var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
-                flight.fareHistory.push(fareItem);
+                flight.fareHistory.dataset0.push(fareItem);
             }
-            flight.fareHistory.sort(compareFares);
-            var lastestFare = flight.fareHistory[flight.fareHistory.length -1];
+            flight.fareHistory.dataset0.sort(compareFares);
+            var lastestFare = flight.fareHistory.dataset0[flight.fareHistory.dataset0.length -1];
             if (lastestFare.currentPrice >= lastestFare.cost){
                 flight.refundStr = "No Refund Currently";
             }
@@ -78,7 +78,6 @@ $scope.addFaresToUserFlights = function(){
                 flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
                 flight.foundRefund = true;
             }
-            flight.fareHistory = {dataset0 : flight.fareHistory};
         }
         finishedFlights = finishedFlights + 1;
                         if (finishedFlights === ($scope.userFlights.length)){ //signal last fare pushed, ready to plots
@@ -136,6 +135,9 @@ $scope.deleteFlight = function(flight){
 
 $scope.allowDeleteSelected = false;
 
+$scope.hasFares = function(flight){
+    return flight.hasFares();
+}
 
 }]) 
 .controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', 'pythonFactory', function($scope, $rootScope, userFlightService, dataFactory, pythonFactory) {
