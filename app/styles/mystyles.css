@@ -84,3 +84,11 @@ body {
 .affix {
   top: 100px;
 }
+
+#allowEdit {
+  .hidden-sm-down
+}
+
+.help-block {
+  color : #a11212;
+}

@@ -92,3 +92,19 @@ var validAirportCode = function(airport){
     'MCO', 'RSW', 'BHM', 'MCI', 'PNS', 'LGA', 'AMA', 'SDF', 'PWM'];
     return (cities.indexOf(airport.toUpperCase()) != -1);
 }
+
+var oldDate = function(date){
+  if (String(date).length < 7){
+   return false;
+  }
+  var fieldDate = new Date(date);
+  return (fieldDate.getTime() < (Date.now() - (86400 * 1000)));
+}
+
+var futureDate = function(date){
+  if (String(date).length < 7){
+   return false;
+  }
+  var fieldDate = new Date(date);
+  return (fieldDate.getTime() > (Date.now() + (86400 * 1000 * 365 * 2))); //2 years in advance
+}

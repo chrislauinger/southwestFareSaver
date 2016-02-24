@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart'])
+angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart','frapontillo.bootstrap-switch'])
 .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
             .state('app', {

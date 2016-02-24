@@ -1,8 +1,14 @@
  <div class="container">
     <div class="row row-content" ng-show="getCurrentUser()"  ng-controller="FlightFormController">
        <div class="col-xs-12" align = "center">
-           <h3>Add Booked Flight (one way)</h3>
            <form class="form-inline" name="bookedForm" ng-submit="submitFlight()" novalidate>
+           <fieldset>
+             <div class="col-xs-12 col-sm-10 col-sm-push-1" align = "center" >
+                <h3>Add Booked Flight (one way)</h3>
+            </div>
+             <div class="hidden-xs col-sm-2 col-sm-push-1">
+                <button type="button" class="btn btn-default btn-xs" ng-click="clearForm()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button> 
+            </div>
             <div class="form-group" ng-class="{ 'has-error' : bookedForm.origin.$error.required && !bookedForm.origin.$pristine || (!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine) }">
                 <input type="text" class="form-control" id="origin" name="origin" placeholder="Depart"
                 ng-model="flightInfo.origin" required>
@@ -11,7 +17,7 @@
                 <input type="text" class="form-control" id="destination" name="destination" placeholder="Arrive"
                 ng-model="flightInfo.destination" required>
             </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookedForm.date.$error.required && !bookedForm.date.$pristine }">
+            <div class="form-group" ng-class="{ 'has-error' : (bookedForm.date.$error.required && !bookedForm.date.$pristine) || ((oldDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine) || ((futureDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)}">
                 <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required min="{{currentDate | date:'yyyy-MM-dd'}}" required>
             </div>
             <div class="form-group" ng-class="{ 'has-error' : bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine }">
@@ -23,15 +29,22 @@
                 ng-model="flightInfo.cost" required>
             </div>
             <button type="submit" class="btn btn-primary" ng-disabled="bookedForm.$invalid || !validAirport(bookedForm.origin.$viewValue) || !validAirport(bookedForm.destination.$viewValue) ">Add Flight</button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="clearForm()">Clear Form</button> 
-            <span ng-show=" (!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine) || (!validAirport(bookedForm.destination.$viewValue) && !bookedForm.destination.$pristine)" class="help-block">depart and arrive are 3 letter airport codes (international flights not supported)</span>
+             <span ng-show="( bookedForm.origin.$error.required && !bookedForm.origin.$pristine) || (bookedForm.destination.$error.required && !bookedForm.destination.$pristine) || (bookedForm.date.$error.required && !bookedForm.date.$pristine) || (bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine) || ( bookedForm.cost.$error.required && !bookedForm.cost.$pristine)" class="help-block">All Fields Required </span>
+             <span ng-show="(!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine)" class="help-block">Origin: Enter a valid airport code (3 letters - no international) </span>
+             <span ng-show="(!validAirport(bookedForm.destination.$viewValue) && !bookedForm.destination.$pristine)" class="help-block">Destination: Enter a valid airport code (3 letters - no international) </span>
+             <span ng-show="((oldDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)" class="help-block">Date: Not valid (in the past) </span>
+             <span ng-show="((futureDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)" class="help-block">Date: Not valid (too far in future) </span>
+            </fieldset>
         </form> 
     </div>
 </div>
 <div class="row row-content" ng-controller="PlotController" ng-show="getCurrentUser()">
-    <div class="col-xs-12" align = "center">
-        <h3>Booked Flights </h3> 
-        <p style="padding:10px"></p>
+    <div class="col-xs-12 col-sm-10 col-sm-push-1" align = "center" >
+        <h3>Booked Flights </h3>  
+    </div>
+    <div class="hidden-xs col-sm-2 col-sm-push-1">
+            <input id = "allowEdit" bs-switch ng-model="allowDeleteSelected" type="checkbox" switch-label = "" switch-icon="glyphicon glyphicon-edit" switch-on-text="" switch-off-text="" switch-on-color= "danger" switch-off-color="info">
+         <p style="padding:10px"></p>
     </div>
     <div class="col-xs-12 col-sm-12">
         <div ng-repeat="userFlight in userFlights | orderBy:'date'">
@@ -48,8 +61,8 @@
                 <linechart data="userFlight.fareHistory" options="getOptions(userFlight)"></linechart>
             </div>
         </div>
-        <div class="col-xs-12 col-xs-push-10 col-sm-1 col-sm-push-1">
-         <button name = "plotDelete" class="btn btn-danger btn-sm" type="button" ng-click="deleteFlight(userFlight)">Delete</button>
+        <div class="col-sm-1" ng-show="allowDeleteSelected" align = "center">
+         <button type="button" ng-click="deleteFlight(userFlight)" class="btn btn-danger btn-xs" style = "text-align: center;position: absolute;top: 50%;"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
      </div>
      <div class="col-xs-12 col-sm-12">
         <p style="padding:30px"></p>

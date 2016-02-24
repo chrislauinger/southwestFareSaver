@@ -2,6 +2,26 @@
 
 angular.module('southwestFareSaverApp')
 
+.service('pythonFactory', ['$http', function($http) {
+               this.runUserFares = function(userFlight){
+                // $http.jsonp(baseURL) 
+                //   .success(function(data){
+                //     console.log("success");
+                //     console.log(data);
+                //   })
+                //   .error(function(data){
+                //     console.log("error")
+                //     console.log(data)
+                //   })
+
+   return $http({
+  method: 'POST',
+  url: 'http://localhost:8081/'
+  //,data : userFlight
+});
+        }
+ }])
+
 .factory('dataFactory', [ function() {
   var data = {};
 

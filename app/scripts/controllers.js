@@ -23,7 +23,7 @@ angular.module('southwestFareSaverApp')
     }],
     axes: {x: {key: "date", type : "date"}, y: {min : 0, max : 100}},
     margin: {
-        top: 0,
+        top: 10,
         right: 40,
         bottom: 20,
         left: 40
@@ -99,6 +99,7 @@ $scope.updateFlightDisplay = function(){
     dataFactory.resetUserFlights();
     for (var i = 0; i < response.data.Items.length; i++){
         dataFactory.addUserFlight(new UserFlight(response.data.Items[i]));
+
     }
 }).
    on('error', function(response) {
@@ -133,8 +134,11 @@ $scope.deleteFlight = function(flight){
    }).send();
 }
 
+$scope.allowDeleteSelected = false;
+
+
 }]) 
-.controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', function($scope, $rootScope, userFlightService, dataFactory) {
+.controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', 'pythonFactory', function($scope, $rootScope, userFlightService, dataFactory, pythonFactory) {
 
     $scope.startedPlotting = false;
     $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false, sentEmail : false};
@@ -149,13 +153,28 @@ $scope.deleteFlight = function(flight){
                 $scope.flightInfo.destination = $scope.flightInfo.destination.toUpperCase();
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
                 .on('success', function(response) {
-
+                   
                 }).
                 on('error', function(response) {
                  console.log('fail add flight');
                  console.log(response);
              }).
                 on('complete', function(response) {
+                    //TODO: some sort of loading message for "searching for flights"
+                    //new code
+                    // pythonFactory.runUserFares($scope.flightInfo)
+                    // .then(function successCallback(response) {
+                    //         console.log("success");
+                    //         console.log(response);
+                    //         $scope.clearForm();
+                    //         $rootScope.$emit('userFlightsChange', {});
+                    // }, function errorCallback(response) {
+                    //     console.log("fail");
+                    //      console.log(response);
+                    // })
+                    // console.log("attempted python");
+
+                    //old code
                     $scope.clearForm();
                     $scope.$apply();
                     $rootScope.$emit('userFlightsChange', {});
@@ -170,12 +189,21 @@ $scope.deleteFlight = function(flight){
                 return validAirportCode(val);
             }
 
+            $scope.oldDate = function(val){
+                return oldDate(val);
+            }
+
+            $scope.futureDate = function(val){
+                return futureDate(val);
+            }
+
         }])
 
 .controller('RegisterController', ['$scope', 'userService', 'dataFactory',function($scope, userService,dataFactory) {
             $scope.registerInfo = {username:"", firstName:"", lastName:"", email:"" };
             $scope.registerMessage = "";
             $scope.takenUsername = "xlau"; //just 
+            $scope.invalidUsername = false;
             $scope.registerUser = function (){
                 $scope.registerMessage = "Loading ...";
 
@@ -188,6 +216,7 @@ $scope.deleteFlight = function(flight){
                         if (response.message === "The conditional request failed"){ //username already exists
                             $scope.takenUsername = $scope.registerInfo.username;
                             $scope.registerMessage = "username already exists: " + $scope.takenUsername;
+                             $scope.invalidUsername = true;
                         }
                         else{
                             $scope.registerMessage = response;
@@ -206,18 +235,21 @@ $scope.deleteFlight = function(flight){
             $scope.$watch('registerInfo.username', function (newValue, oldValue) {
                 if (newValue != $scope.takenUsername){
                     $scope.registerMessage = "";
+                    $scope.invalidUsername = false;
                 }
                 if (newValue == $scope.takenUsername){
                    $scope.registerMessage = "username already exists: " + $scope.takenUsername;
+                   $scope.invalidUsername = true;
                }
            })
 
         }])
 
 .controller('LoginController', ['$scope', 'userService','dataFactory', function($scope, userService, dataFactory) {
-  $scope.username = ''
+  $scope.username = '';
   $scope.invalidUsername = false;
-  $scope.invalidUsernameString = ""
+  $scope.invalidUsernameString = "null"
+  $scope.invalidUsernameMessage = ""
 
   $scope.login = function () {
     var request = userService.getItem($scope.username);
@@ -229,7 +261,8 @@ $scope.deleteFlight = function(flight){
         }
         else {
             $scope.invalidUsername = true;
-            $scope.invalidUsernameString = $scope.username + " " + "is not a valid username, please register"
+            $scope.invalidUsernameString = $scope.username;
+            $scope.invalidUsernameMessage = $scope.username + " " + "is not a valid username, please register";
         }
     }).
     on('error', function(response) {
@@ -237,13 +270,22 @@ $scope.deleteFlight = function(flight){
         console.log(response);
         console.log($scope.username);
         $scope.invalidUsername = true;
-        $scope.invalidUsernameString = "Server Error, please try again later " + " " + response;
+        $scope.invalidUsernameMessage = "Server Error, please try again later " + " " + response;
     }).
     on('complete', function(response) {
         $scope.$apply();
     }).
     send();
 };
+
+              $scope.$watch('username', function (newValue, oldValue) {
+                if (newValue != $scope.invalidUsernameString){
+                    $scope.invalidUsername = false;
+                }
+                if (newValue == $scope.invalidUsernameString){
+                   $scope.invalidUsername = true;
+               }
+           })
 
 }])
 
