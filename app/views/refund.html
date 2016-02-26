@@ -66,7 +66,7 @@
                 <linechart data="userFlight.fareHistory" options="getOptions(userFlight)"></linechart>
             </div>
             <div class = "hidden-xs" ng-show = "!hasFares(userFlight)">
-                <p style="text-align:center; width:75%;position: relative;"> No fares found yet. Read more here. </p>
+                <p style="text-align:center; width:75%;position: relative;"> {{userFlight.loadingMessage}} </p>
             </div>
         </div>
         <div class="col-sm-1" ng-show="allowDeleteSelected" align = "center">

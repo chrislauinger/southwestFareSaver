@@ -35,6 +35,7 @@ function UserFlight(data){
     this.displayStr = monthStr + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
     this.foundRefund = false;
+    this.loadingMessage = "Loading..."
 
     this.hasFares = function(){
       return (this.fareHistory.dataset0.length > 0)
@@ -117,4 +118,11 @@ var futureDate = function(date){
   }
   var fieldDate = new Date(date);
   return (fieldDate.getTime() > (Date.now() + (86400 * 1000 * 365 * 2))); //2 years in advance
+}
+
+var diffCostString = function(diff, usingPoints){
+  if (usingPoints){
+    return diff.toString() + " points";
+  }
+  return "$" + diff.toString();
 }

@@ -54,7 +54,6 @@ $scope.getOptions = function(flight){
 $scope.userFlights = dataFactory.getUserFlights();
 
 $scope.addFaresToUserFlights = function(){
-   var finishedFlights = 0;
    dataFactory.getUserFlights().forEach(function(flight, i){
     fareService.getFares(flight)
     .on('success', function(response){
@@ -75,20 +74,24 @@ $scope.addFaresToUserFlights = function(){
                 flight.refundStr = "No Refund Currently";
             }
             else {
-                flight.refundStr = "Refund Found! " + "Rebook on southwest.com for a refund of " + (lastestFare.cost - lastestFare.currentPrice).toString();
+                var txt = "southwest";
+                flight.refundStr = "Refund Found! Rebook on southwest for a refund of " + diffCostString(lastestFare.cost - lastestFare.currentPrice, flight.usingPoints);
                 flight.foundRefund = true;
             }
         }
-        finishedFlights = finishedFlights + 1;
-                        if (finishedFlights === ($scope.userFlights.length)){ //signal last fare pushed, ready to plots
-                            $scope.userFlights = dataFactory.getUserFlights();
-                            $scope.$apply();
-                        }
+        else {
+             flight.loadingMessage = "No fares found yet. Read more here"
+        }
                     }).
     on('error', function(response) {
         console.log('fail get fares');
         console.log(response);
-    }).send();
+    }).
+    on('complete', function(response) {
+        $scope.userFlights = dataFactory.getUserFlights();
+        $scope.$apply();
+    })
+    .send();
 })
 }
 
