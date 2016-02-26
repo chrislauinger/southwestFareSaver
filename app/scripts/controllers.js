@@ -64,6 +64,10 @@ $scope.addFaresToUserFlights = function(){
                 var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
                 var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                 flight.fareHistory.dataset0.push(fareItem);
+                if (response.data.Items.length == 1){
+                    var repeatFareItem = { 'date' : new Date(fareValidityDate - (60 * 1000 * 10)), 'currentPrice' : currentPrice, 'cost' : flight.cost};
+                    flight.fareHistory.dataset0.push(repeatFareItem);
+                }
             }
             flight.fareHistory.dataset0.sort(compareFares);
             var lastestFare = flight.fareHistory.dataset0[flight.fareHistory.dataset0.length -1];
