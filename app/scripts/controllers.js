@@ -101,7 +101,6 @@ $scope.updateFlightDisplay = function(){
     dataFactory.resetUserFlights();
     for (var i = 0; i < response.data.Items.length; i++){
         dataFactory.addUserFlight(new UserFlight(response.data.Items[i]));
-
     }
 }).
    on('error', function(response) {
@@ -110,6 +109,9 @@ $scope.updateFlightDisplay = function(){
  }).
    on('complete', function(response) {
     $scope.userFlights = dataFactory.getUserFlights();
+    if ($scope.userFlights.length > 0){
+        dataFactory.setNoFlights(false);
+    }
     $scope.addFaresToUserFlights();
 }).send();
 }
@@ -207,7 +209,6 @@ $scope.hasFares = function(flight){
                 userService.putUser($scope.registerInfo).
                 on('success', function(response) {
                     dataFactory.setCurrentUser($scope.registerInfo);
-
                 }).
                 on('error', function(response) {
                         if (response.message === "The conditional request failed"){ //username already exists
@@ -220,6 +221,7 @@ $scope.hasFares = function(flight){
                         }
                     }).
                 on('complete', function(response) {
+                    dataFactory.setNoFlights(true);
                     $scope.$apply();
                 }).send();
 
@@ -242,7 +244,7 @@ $scope.hasFares = function(flight){
 
         }])
 
-.controller('LoginController', ['$scope', 'userService','dataFactory', function($scope, userService, dataFactory) {
+.controller('LoginController', ['$scope', 'userService','userFlightService', 'dataFactory', function($scope, userService, userFlightService, dataFactory) {
   $scope.username = '';
   $scope.invalidUsername = false;
   $scope.invalidUsernameString = "null"
@@ -255,6 +257,15 @@ $scope.hasFares = function(flight){
         if (validUser(response.data.Item)){
             dataFactory.setCurrentUser(convertUserObjectToJson(response.data.Item));
             $scope.invalidUsername = false;
+            userFlightService.getFlights(dataFactory.getCurrentUser().username)
+            .on('success', function(response) {
+                if (response.data.Items.length == 0){
+                    dataFactory.setNoFlights(true);
+                     $scope.$apply();
+                }})
+            .on('error', function(response) {
+                console.log("error userflights");
+            }).send();
         }
         else {
             $scope.invalidUsername = true;
@@ -263,9 +274,6 @@ $scope.hasFares = function(flight){
         }
     }).
     on('error', function(response) {
-        console.log("Error!");
-        console.log(response);
-        console.log($scope.username);
         $scope.invalidUsername = true;
         $scope.invalidUsernameMessage = "Server Error, please try again later " + " " + response;
     }).
@@ -313,6 +321,14 @@ $scope.hasFares = function(flight){
         }
         return false;
     }
+
+    $scope.noFlights = null;
+    $scope.getNoFlights = function(){
+        $scope.noFlights = dataFactory.getNoFlights();
+        return $scope.noFlights;
+    }
+
+
 }])
 
 ;

@@ -20,6 +20,16 @@ angular.module('southwestFareSaverApp')
   var data = {};
 
   data.currentUser = null;
+  data.noFlights = null;
+
+
+  data.setNoFlights = function(noFlights){
+    data.noFlights = noFlights;
+  }
+
+  data.getNoFlights = function(){
+    return data.noFlights;
+  }
 
   data.setCurrentUser = function(user){
     data.currentUser = user;
@@ -66,7 +76,7 @@ angular.module('southwestFareSaverApp')
     var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
     return table.putItem({Item : getUserFlightItem(flightInfo, username)});
   }
-              this.getFlights = function(username){  //TODO: filter out old dates
+              this.getFlights = function(username){  
                 var table = new AWS.DynamoDB({params: {TableName: 'userFlights'}});
                 var dateExpression = "#date >= :currentDate"
                 return table.query({FilterExpression: dateExpression,

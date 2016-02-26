@@ -49,6 +49,9 @@
             <div ng-if="!getCurrentUser() && !isHomeState()">
                 <h3> Please login or register on the <a ui-sref="app" style="color:#FFCC00">here</a> </h3>
             </div>
+            <div ng-show="getCurrentUser() && isHomeState() && getNoFlights()">
+                <h3> Add your flights in the <a ui-sref="app.refund" style="color:#FFCC00">refund page</a> </h3>
+            </div>
         </div>
     </div>
 </header>
