@@ -4,9 +4,9 @@ angular.module('southwestFareSaverApp')
 
 .service('pythonFactory', ['$http', function($http) {
     this.runUserFares = function(userFlight){
-      var data = $.param({ origin : userFlight.origin,
-                          destination : userFlight.destination,
-                          date : requestDateFormat(userFlight.date)
+      var data = $.param({ origin : userFlight.origin.toUpperCase(),
+                          destination : userFlight.destination.toUpperCase(),
+                          date : midnightDateString(userFlight.date)
                         });
       return $http({
         method: 'POST', //POST

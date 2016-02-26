@@ -42,12 +42,8 @@ function UserFlight(data){
 
 }
 
-var requestDateFormat = function(date){
-  var day = date.getUTCDate();
-  var month = date.getUTCMonth();
-  var year = date.getUTCFullYear();
-  return  (month+1).toString() + "/" + day.toString() + "/" + year.toString();
-
+var midnightDateString = function(date){
+  return (date.getTime() - date.getTimezoneOffset()*60*1000).toString();
 }
 
 var validUser = function(data){
@@ -75,7 +71,7 @@ return item;
 };
 
 var  getUserFlightItem = function(flightInfo, username){
-  var dateStr=  (flightInfo.date.getTime() - flightInfo.date.getTimezoneOffset()*60*1000).toString();
+  var dateStr=  midnightDateString(flightInfo.date);
   var numberStr = flightInfo.flightNumber.toString();
   var route = flightInfo.origin.toString() + "_" + flightInfo.destination.toString();
   var key = route + "_" + dateStr + "_" + numberStr;
