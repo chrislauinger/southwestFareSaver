@@ -29,14 +29,24 @@ function UserFlight(data){
     this.route = this.origin.toString() + "_" + this.destination.toString();
 
     var day = this.date.getUTCDate();
-    var month = monthNames[this.date.getUTCMonth()];
-    this.displayStr = month + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
+    var month = this.date.getUTCMonth();
+    var monthStr = monthNames[month];
+    var year = this.date.getUTCFullYear();
+    this.displayStr = monthStr + " " + day.toString() + ": " + this.origin + " -> " + this.destination;
     this.refundStr = "Checking for Refunds...";
     this.foundRefund = false;
 
     this.hasFares = function(){
       return (this.fareHistory.dataset0.length > 0)
     }
+
+}
+
+var requestDateFormat = function(date){
+  var day = date.getUTCDate();
+  var month = date.getUTCMonth();
+  var year = date.getUTCFullYear();
+  return  (month+1).toString() + "/" + day.toString() + "/" + year.toString();
 
 }
 

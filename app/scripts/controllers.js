@@ -143,7 +143,6 @@ $scope.hasFares = function(flight){
     $scope.currentDate = new Date();
     $scope.scraping = false;
 
-            //TODO: verify flight is real?, 
             $scope.submitFlight = function(){
                 $scope.scraping = true; 
                 if ($scope.flightInfo.cost > 2000){
@@ -153,7 +152,6 @@ $scope.hasFares = function(flight){
                 $scope.flightInfo.destination = $scope.flightInfo.destination.toUpperCase();
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
                 .on('success', function(response) {
-                   
                 }).
                 on('error', function(response) {
                  console.log('fail add flight');
@@ -162,14 +160,10 @@ $scope.hasFares = function(flight){
                 on('complete', function(response) {
                     pythonFactory.runUserFares($scope.flightInfo)
                     .then(function successCallback(response) {
-                            console.log("success");
-                            console.log(response);
                             $scope.scraping = false;
                             $scope.clearForm();
                             $rootScope.$emit('userFlightsChange', {});
                     }, function errorCallback(response) {
-                         console.log("fail");
-                         console.log(response);
                         $scope.scraping = false;
                         $scope.clearForm();
                         $rootScope.$emit('userFlightsChange', {});
