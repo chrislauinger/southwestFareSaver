@@ -1,10 +1,7 @@
-<div>
-    <p style="padding:20px"></p>
-</div>
-
 <div class="container"  ng-controller="TabController" ng-show="!getCurrentUser()"> 
- <div class="row row-header">
-  <div class="col-xs-12 col-sm-4 col-sm-push-2">
+ <div class="row row-content">
+
+  <div class="col-xs-12 col-sm-4">
     <ul class="nav nav-tabs">
       <li  ng-class="{active:isSelected(1)}"><a ng-click="select(1)">Login</a></li>
       <li ng-class="{active:isSelected(2)}" ><a ng-click="select(2)">Register New User</a></li>
@@ -70,7 +67,20 @@
     </form> 
 </div>
 </div>
+<p style="padding:20px"></p>
 </div>
+ <div class="col-xs-12 col-sm-8" align = "center" style = "border-left: 2px ridge;">
+  <div class="row row-content">
+    <h3> Track Flight Prices </h3>
+    <img src="app/images/plot1.png" style = "max-width:100%">
+    <img src="app/images/plot2.png" style = "max-width:100%">
+  </div>
+   <div class="row row-content">
+    <h3> Get Emails on Price Drops </h3> 
+    <img src="app/images/emailExample.png" style = "max-width:50%;border:1px solid">
+    </div>
+ </div>
+
 </div>
 
 
