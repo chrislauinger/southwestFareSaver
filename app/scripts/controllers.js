@@ -196,6 +196,10 @@ $scope.hasFares = function(flight){
                 return futureDate(val);
             }
 
+            $scope.validDate = function(val){
+                return validDate(val);
+            }
+
         }])
 
 .controller('RegisterController', ['$scope', 'userService', 'dataFactory',function($scope, userService,dataFactory) {
@@ -327,10 +331,14 @@ $scope.hasFares = function(flight){
         $scope.noFlights = dataFactory.getNoFlights();
         return $scope.noFlights;
     }
-    $scope.usingChrome = false;
+    var chrome = false;
      var ua = window.navigator.userAgent;
      if (ua.indexOf("Chrome") > 0){
-        $scope.usingChrome = true;
+        chrome = true;
+     }
+
+     $scope.usingChrome = function(){
+        return chrome;
      }
 
 

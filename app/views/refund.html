@@ -9,6 +9,7 @@
              <div class="hidden-xs col-sm-2 col-sm-push-1">
                 <button type="button" class="btn btn-default btn-xs" ng-click="clearForm()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button> 
             </div>
+              <div class="col-xs-12 col-sm-12">
             <div class="form-group" ng-class="{ 'has-error' : bookedForm.origin.$error.required && !bookedForm.origin.$pristine || (!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine) }">
                 <input type="text" class="form-control" id="origin" name="origin" placeholder="Depart"
                 ng-model="flightInfo.origin" required>
@@ -18,7 +19,7 @@
                 ng-model="flightInfo.destination" required>
             </div>
             <div class="form-group" ng-class="{ 'has-error' : (bookedForm.date.$error.required && !bookedForm.date.$pristine) || ((oldDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine) || ((futureDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)}">
-                <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="yyyy-MM-dd" required min="{{currentDate | date:'yyyy-MM-dd'}}" required>
+                <input type="date" id="date" name="date" ng-model="flightInfo.date" placeholder="YYYY-MM-DD" required min="{{currentDate | date:'yyyy-MM-dd'}}" required>
             </div>
             <div class="form-group" ng-class="{ 'has-error' : bookedForm.flightNumber.$error.required && !bookedForm.flightNumber.$pristine }">
                 <input type="number" class="form-control" id="flightNumber" name="flightNumber" placeholder="Flight # (1st flight)"
@@ -28,9 +29,8 @@
                 <input type="number" class="form-control" id="cost" name="cost" placeholder="Cost ($ or points)"
                 ng-model="flightInfo.cost" required>
             </div>
-                 
-
-
+            </div>
+            <div class="col-xs-12 col-sm-12">     
             <button type="submit" class="btn btn-primary" ng-disabled="bookedForm.$invalid || !validAirport(bookedForm.origin.$viewValue) || !validAirport(bookedForm.destination.$viewValue) ">Add Flight</button>
             <span ng-show = "scraping" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
 
@@ -38,7 +38,8 @@
              <span ng-show="(!validAirport(bookedForm.origin.$viewValue) && !bookedForm.origin.$pristine)" class="help-block">Origin: Enter a valid airport code (3 letters - no international) </span>
              <span ng-show="(!validAirport(bookedForm.destination.$viewValue) && !bookedForm.destination.$pristine)" class="help-block">Destination: Enter a valid airport code (3 letters - no international) </span>
              <span ng-show="((oldDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)" class="help-block">Date: Not valid (in the past) </span>
-             <span ng-show="((futureDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine)" class="help-block">Date: Not valid (too far in future) </span>
+             <span ng-show="(!(validDate(bookedForm.date.$viewValue)) && !bookedForm.date.$pristine && !usingChrome())" class="help-block">Date: Not valid (YYYY-MM-DD) </span>
+             </div>
             </fieldset>
         </form> 
     </div>

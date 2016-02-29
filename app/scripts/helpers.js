@@ -126,3 +126,14 @@ var diffCostString = function(diff, usingPoints){
   }
   return "$" + diff.toString();
 }
+
+var validDate = function(date){
+  var dateObject = Date.parse(date);
+  if (isNaN(dateObject)){
+    return false;
+  }
+  if (String(date).length < 10){
+    return false;
+  }
+  return true;
+}
