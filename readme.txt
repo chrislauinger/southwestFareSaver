@@ -16,6 +16,7 @@ sudo npm install n3-charts
 sudo npm install bootstrap
 sudo npm install font-awesome
 sudo npm install jquery
+sudo npm install angular-bootstrap-switch
 
 Startup web app:
 http-server -p 8081
