@@ -327,6 +327,11 @@ $scope.hasFares = function(flight){
         $scope.noFlights = dataFactory.getNoFlights();
         return $scope.noFlights;
     }
+    $scope.usingChrome = false;
+     var ua = window.navigator.userAgent;
+     if (ua.indexOf("Chrome") > 0){
+        $scope.usingChrome = true;
+     }
 
 
 }])
