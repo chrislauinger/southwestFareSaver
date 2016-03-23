@@ -77,7 +77,7 @@ var addFaresToFlight = function(flight, items){
             }
         }
         else {
-             flight.loadingMessage = "No fares found yet"
+             flight.loadingMessage = "No fares found. \n The flight may be sold out or incorrect flight info entered. \n Please check again later or verify your flight info"
         }
 }
 
@@ -183,7 +183,7 @@ $scope.hasFares = function(flight){
 .controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', 'pythonFactory', function($scope, $rootScope, userFlightService, dataFactory, pythonFactory) {
 
     $scope.startedPlotting = false;
-    $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", sentEmail : false};
+    $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", maxDrop : 0};
     $scope.currentDate = new Date();
     $scope.scraping = false;
 
@@ -212,7 +212,7 @@ $scope.hasFares = function(flight){
                 }).send();
             }
             $scope.clearForm = function(){
-                $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false , sentEmail : false};
+                $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", maxDrop : 0};
                 $scope.bookedForm.$setPristine();
             }
 
