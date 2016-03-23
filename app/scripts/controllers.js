@@ -189,7 +189,7 @@ $scope.hasFares = function(flight){
 
             $scope.submitFlight = function(){
                 $scope.scraping = true; 
-                if ($scope.flightInfo.cost > 2000){
+                if ($scope.flightInfo.cost > 1000){
                     $scope.flightInfo.usingPoints = true;
                 }
                 $scope.flightInfo.origin = $scope.flightInfo.origin.toUpperCase();
