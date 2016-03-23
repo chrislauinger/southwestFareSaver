@@ -23,7 +23,10 @@ function UserFlight(data){
     this.destination = data.destination.S;
     this.flightNumber = parseInt(data.flight_number.N);
     this.cost = parseInt(data.cost.N);
-    this.usingPoints = data.using_points.BOOL;
+    this.usingPoints = false;
+    if (this.cost > 1000){
+      this.usingPoints = true;
+    }
     this.flightKey = data.flight_key.S;
     this.fareHistory = {dataset0 : []};
     this.route = this.origin.toString() + "_" + this.destination.toString();

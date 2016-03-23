@@ -183,15 +183,12 @@ $scope.hasFares = function(flight){
 .controller('FlightFormController', ['$scope', '$rootScope', 'userFlightService','dataFactory', 'pythonFactory', function($scope, $rootScope, userFlightService, dataFactory, pythonFactory) {
 
     $scope.startedPlotting = false;
-    $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", usingPoints : false, sentEmail : false};
+    $scope.flightInfo = {origin : "", destination : "", date : "", flightNumber: "", cost : "", sentEmail : false};
     $scope.currentDate = new Date();
     $scope.scraping = false;
 
             $scope.submitFlight = function(){
                 $scope.scraping = true; 
-                if ($scope.flightInfo.cost > 1000){
-                    $scope.flightInfo.usingPoints = true;
-                }
                 $scope.flightInfo.origin = $scope.flightInfo.origin.toUpperCase();
                 $scope.flightInfo.destination = $scope.flightInfo.destination.toUpperCase();
                 userFlightService.addFlight($scope.flightInfo, dataFactory.getCurrentUser().username)
