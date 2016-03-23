@@ -87,7 +87,7 @@ var  getUserFlightItem = function(flightInfo, username){
     "date" : {"N" : dateStr},
     "flight_number" : {"N" : numberStr },
     "cost" : {"N" : flightInfo.cost.toString()},
-    "max_drop" : {"N" : flightInfo.maxDrop},
+    "max_drop" : {"N" : flightInfo.maxDrop.toString()},
   }
   return item;
 }
