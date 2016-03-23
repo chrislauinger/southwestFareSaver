@@ -22,7 +22,6 @@ angular.module('southwestFareSaverApp')
   data.currentUser = null;
   data.noFlights = null;
 
-
   data.setNoFlights = function(noFlights){
     data.noFlights = noFlights;
   }
@@ -52,6 +51,7 @@ angular.module('southwestFareSaverApp')
   data.getUserFlights = function(){
     return data.userFlights;
   }
+
 
   return data;
 }])
@@ -103,7 +103,7 @@ angular.module('southwestFareSaverApp')
     var table = new AWS.DynamoDB({params: {TableName: 'fares'}});
     var flightKeyExpression = '#flightKey = :keyVal';
     var dateLowerBound = userFlight.date.getTime();
-    var dateUpperBound = dateLowerBound + (86400 * 1000 * 2);
+    var dateUpperBound = dateLowerBound + (86400 * 1000 * 1);
     return table.query({FilterExpression: flightKeyExpression,
      ExpressionAttributeValues : {':keyVal' : { 'S' : String(userFlight.flightKey)}},
      ExpressionAttributeNames : {'#flightKey' : 'flight_key'},
@@ -119,5 +119,28 @@ angular.module('southwestFareSaverApp')
       }
   });
   }
+
+    this.getFaresAgain = function(userFlight, lastEvaluatedKey){  
+    var table = new AWS.DynamoDB({params: {TableName: 'fares'}});
+    var flightKeyExpression = '#flightKey = :keyVal';
+    var dateLowerBound = userFlight.date.getTime();
+    var dateUpperBound = dateLowerBound + (86400 * 1000 * 1);
+    return table.query({FilterExpression: flightKeyExpression,
+     ExpressionAttributeValues : {':keyVal' : { 'S' : String(userFlight.flightKey)}},
+     ExpressionAttributeNames : {'#flightKey' : 'flight_key'},
+     KeyConditions: {
+       'route' : {
+          ComparisonOperator : 'EQ',
+          AttributeValueList : [{'S' : String(userFlight.route)}]
+        },
+        'sort_key' : {
+          ComparisonOperator : 'BETWEEN',
+          AttributeValueList : [{'S' : String(dateLowerBound)}, {'S' : String(dateUpperBound)}]
+        }
+      },
+    ExclusiveStartKey : lastEvaluatedKey
+  });
+  }
+
 }])
 ;

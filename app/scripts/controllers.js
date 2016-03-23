@@ -53,17 +53,14 @@ $scope.getOptions = function(flight){
 
 $scope.userFlights = dataFactory.getUserFlights();
 
-$scope.addFaresToUserFlights = function(){
-   dataFactory.getUserFlights().forEach(function(flight, i){
-    fareService.getFares(flight)
-    .on('success', function(response){
-         if (response.data.Items.length > 0){
-            for (var j = 0; j < response.data.Items.length; j++){
-                var fareValidityDate = parseInt(response.data.Items[j].fare_validity_date.N);
-                var currentPrice = flight.usingPoints ?  parseInt(response.data.Items[j].points.N) : parseInt(response.data.Items[j].price.N);
+var addFaresToFlight = function(flight, items){
+    if (items.length > 0){
+            for (var j = 0; j < items.length; j++){
+                var fareValidityDate = parseInt(items[j].fare_validity_date.N);
+                var currentPrice = flight.usingPoints ?  parseInt(items[j].points.N) : parseInt(items[j].price.N);
                 var fareItem = { 'date' : new Date(fareValidityDate), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                 flight.fareHistory.dataset0.push(fareItem);
-                if (response.data.Items.length == 1){
+                if (items.length == 1){
                     var repeatFareItem = { 'date' : new Date(fareValidityDate - (60 * 1000 * 10)), 'currentPrice' : currentPrice, 'cost' : flight.cost};
                     flight.fareHistory.dataset0.push(repeatFareItem);
                 }
@@ -80,9 +77,47 @@ $scope.addFaresToUserFlights = function(){
             }
         }
         else {
-             flight.loadingMessage = "No fares found yet. Read more here"
+             flight.loadingMessage = "No fares found yet"
         }
-                    }).
+}
+
+var getFaresAgain = function(flight, lastKey, items){
+    fareService.getFaresAgain(flight, lastKey)
+    .on('success', function(response){
+        items = items.concat(response.data.Items);
+        lastKey = response.data.LastEvaluatedKey;
+    })
+    .on('error', function(response) {
+        console.log("errror get fare again");
+        lastKey = undefined;
+    })
+    .on('complete', function(response) {
+         if (lastKey != undefined){
+            getFaresAgain(flight, lastKey, items);
+         }
+         else {
+            addFaresToFlight(flight, items);
+            $scope.userFlights = dataFactory.getUserFlights();
+            $scope.$apply();
+         }
+    })
+    .send();
+}
+
+$scope.addFaresToUserFlights = function(){
+   var items = {};
+   dataFactory.getUserFlights().forEach(function(flight, i){
+    fareService.getFares(flight)
+    .on('success', function(response){
+        var items = response.data.Items;
+        var lastKey = response.data.LastEvaluatedKey;
+        if (lastKey != undefined){
+            getFaresAgain(flight, lastKey, items);
+        }
+        else {
+            addFaresToFlight(flight, items);
+       }
+    }).
     on('error', function(response) {
         console.log('fail get fares');
         console.log(response);
