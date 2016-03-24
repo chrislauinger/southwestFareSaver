@@ -1,0 +1,15 @@
+
+<header class="jumbotron">
+    <div class="container" >
+        <div class="row row-header">
+            <div class="col-xs-12 col-sm-8" align = "center">
+                <h1>Dragon Fare Scanner</h1>
+                <p> This site has been shut down as requested by Southwest</p>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <p style="padding:5px;"></p>
+                <img src="app/images/dragon.jpg" class="img-responsive" height="100">
+            </div>
+        </div>
+    </div>
+</header>

@@ -7,10 +7,10 @@ angular.module('southwestFareSaverApp', ['ui.router','ngResource','n3-line-chart
                 url:'/',
                 views: {
                     'header': {
-                        templateUrl : 'app/views/header.html',
+                        templateUrl : 'app/views/header_alt.html',
                     },
                     'content': {
-                        templateUrl : 'app/views/home.html'
+                        templateUrl : 'app/views/home_alt.html'
                     }
                 }
 
